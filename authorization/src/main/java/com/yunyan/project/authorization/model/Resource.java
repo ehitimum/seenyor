@@ -33,7 +33,7 @@ public class Resource {
     @Column(nullable = false)
     private LocalDateTime created_at;
     @Column(nullable = true)
-    private LocalDateTime updated_at = true;
+    private LocalDateTime updated_at = null;
     @Column(nullable = false)
     private boolean is_deleted = true;
     @ManyToOne

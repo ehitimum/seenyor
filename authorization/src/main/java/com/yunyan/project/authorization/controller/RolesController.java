@@ -24,8 +24,9 @@ import com.yunyan.project.authorization.dto.RolesRequest;
 import com.yunyan.project.authorization.dto.RolesResponse;
 import com.yunyan.project.authorization.service.RolesService;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-
+@Tag(name = "Roles Conroller")
 @RestController
 @RequestMapping("/roles")
 @RequiredArgsConstructor
