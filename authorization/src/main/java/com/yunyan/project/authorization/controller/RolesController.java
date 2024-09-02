@@ -41,7 +41,7 @@ public class RolesController {
         return "Hello World"; 
     }
 
-    @PostMapping("/create-role")
+    @PostMapping
     public ResponseEntity<Response> createRoles(@RequestBody @Validated RolesRequest rolesRequest){
         ResponseEntity<Response> response = rolesService.createRoles(rolesRequest);
         return response;
@@ -52,13 +52,13 @@ public class RolesController {
         return rolesService.getAllRoles();
     }
 
-    @PutMapping("/update-role/{uuid}")
+    @PutMapping("/{uuid}")
     public ResponseEntity<Response> updateRole(@PathVariable int uuid, @RequestBody @Validated RolesRequest updateRolesRequest){
         ResponseEntity<Response> response = rolesService.updateRole(uuid, updateRolesRequest);
         return response;
     }
 
-    @PutMapping("/delete-role/{uuid}")
+    @PutMapping("/delete/{uuid}")
     public ResponseEntity<Response> soft_deleteRole(@PathVariable int uuid){
         ResponseEntity<Response> response = rolesService.soft_deleteRole(uuid);
         return response;
