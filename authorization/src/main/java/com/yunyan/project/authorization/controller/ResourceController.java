@@ -1,14 +1,20 @@
 package com.yunyan.project.authorization.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.yunyan.project.authorization.dto.ResourceRequest;
+import com.yunyan.project.authorization.dto.ResourceResponse;
 import com.yunyan.project.authorization.dto.Response;
 import com.yunyan.project.authorization.service.ResourceService;
 
@@ -21,9 +27,24 @@ public class ResourceController {
     @Autowired
     private final ResourceService resourceService;
 
-    @PostMapping("/create-resource")
-    public ResponseEntity<Response> createResource(@RequestBody @Validated ResourceRequest request){
-        ResponseEntity<Response> response = resourceService.createResource(request);
+    @PostMapping
+    public ResponseEntity<ResourceResponse> createResource(@RequestBody @Validated ResourceRequest request){
+        ResponseEntity<ResourceResponse> response = resourceService.createResource(request);
         return response; 
     }
+    @GetMapping
+    public List<ResourceResponse> getResources(){
+        return resourceService.getAllResource();
+    }
+    @PutMapping("/{uuid}")
+    public ResponseEntity<ResourceResponse> updateResource(@PathVariable int uuid, @RequestBody @Validated ResourceRequest request){
+        ResponseEntity<ResourceResponse> response = resourceService.updateResource(uuid, request);
+        return response;
+    }
+    @PutMapping("/delete/{uuid}")
+    public ResponseEntity<ResourceResponse> deleteResource(@PathVariable int uuid){
+        ResponseEntity<ResourceResponse> response = resourceService.deleteResource(uuid);
+        return response;
+    }
+
 }

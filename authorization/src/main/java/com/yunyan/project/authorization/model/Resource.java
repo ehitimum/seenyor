@@ -36,7 +36,8 @@ public class Resource {
     private LocalDateTime updated_at = null;
     @Column(nullable = false)
     private boolean is_deleted = true;
-    @ManyToOne
-    @JoinColumn(name = "role_id")
-    private Roles role; 
+    public Roles getRole() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getRole'");
+    } 
 }
