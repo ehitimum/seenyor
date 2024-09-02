@@ -3,7 +3,7 @@ import java.time.LocalDateTime;
 
 import com.yunyan.project.authorization.model.Resource;
 
-import jakarta.validation.constraints.NotEmpty;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

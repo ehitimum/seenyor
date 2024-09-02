@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.yunyan.project.authorization.dto.ResourceRequest;
 import com.yunyan.project.authorization.dto.ResourceResponse;
-import com.yunyan.project.authorization.dto.Response;
 import com.yunyan.project.authorization.service.ResourceService;
 
 import lombok.RequiredArgsConstructor;
