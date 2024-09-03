@@ -3,16 +3,24 @@ package com.yunyan.project.authorization.service;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 import java.util.Optional;
+import java.util.stream.*;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import com.yunyan.project.authorization.dto.AddPermissionsToRole;
 import com.yunyan.project.authorization.dto.Response;
 import com.yunyan.project.authorization.dto.RolesRequest;
 import com.yunyan.project.authorization.dto.RolesResponse;
+import com.yunyan.project.authorization.model.Permission;
 import com.yunyan.project.authorization.model.Roles;
+import com.yunyan.project.authorization.repository.PermissionRepository;
 import com.yunyan.project.authorization.repository.RolesRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -20,8 +28,9 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class RolesService {
-
+    @Autowired
     private final RolesRepository rolesRepository;
+    private final PermissionRepository permissionRepository;
     public ResponseEntity<Response> createRoles(RolesRequest rolesRequest){
         Roles role = null;
         try {
@@ -53,6 +62,7 @@ public class RolesService {
         .status(role.isStatus())
         .created_At(role.getCreated_At())
         .updated_At(role.getUpdated_At())
+        .permission_id(role.getPermissions())
         .build();
     }
 
@@ -88,6 +98,57 @@ public class RolesService {
         }
     }
 
- 
+    public ResponseEntity<RolesResponse> addPermission(int uuid, AddPermissionsToRole request) {
+        try {
+            Optional<Roles> roleOptional = rolesRepository.findById(uuid);
+            if (roleOptional.isEmpty()) {
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            }
+            Roles role = roleOptional.get();
+    
+            Set<Integer> permissionIds = request.getPermission_ids().stream()
+                                             .mapToInt(id -> id)
+                                             .boxed()
+                                             .collect(Collectors.toSet());
+            List<Permission> permissions = permissionRepository.findAllById(permissionIds);
+    
+            role.getPermissions().addAll(permissions);
+            rolesRepository.save(role);
+    
+            return new ResponseEntity<>(RolesResponse.builder()
+                                        .name(role.getName())
+                                        .status(role.isStatus())
+                                        .created_At(role.getCreated_At())
+                                        .updated_At(role.getUpdated_At())
+                                        .permission_id(role.getPermissions())
+                                        .build(),
+                                    HttpStatus.ACCEPTED);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        
+
+    }
+
+    public ResponseEntity<RolesResponse> getOneRole(int uuid) {
+        try {
+            Optional<Roles> roles = rolesRepository.findById(uuid);
+            if (roles.isEmpty()) {
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            }
+            Roles role = roles.get();
+            return new ResponseEntity<>(RolesResponse.builder()
+                    .name(role.getName())
+                    .status(role.isStatus())
+                    .created_At(role.getCreated_At())
+                    .updated_At(role.getUpdated_At())
+                    .permission_id(role.getPermissions())
+                    .build(),
+                HttpStatus.ACCEPTED);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        
+    }
 
 }

@@ -19,14 +19,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.yunyan.project.authorization.dto.AddPermissionsToRole;
 import com.yunyan.project.authorization.dto.Response;
 import com.yunyan.project.authorization.dto.RolesRequest;
 import com.yunyan.project.authorization.dto.RolesResponse;
 import com.yunyan.project.authorization.service.RolesService;
-
-import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-@Tag(name = "Roles Conroller")
+
 @RestController
 @RequestMapping("/roles")
 @RequiredArgsConstructor
@@ -51,6 +50,10 @@ public class RolesController {
     public List<RolesResponse> getAllRoles(){
         return rolesService.getAllRoles();
     }
+    @GetMapping("/{uuid}")
+    public ResponseEntity<RolesResponse> getOneRole(@PathVariable int uuid){
+        return rolesService.getOneRole(uuid);
+    }
 
     @PutMapping("/{uuid}")
     public ResponseEntity<Response> updateRole(@PathVariable int uuid, @RequestBody @Validated RolesRequest updateRolesRequest){
@@ -63,5 +66,11 @@ public class RolesController {
         ResponseEntity<Response> response = rolesService.soft_deleteRole(uuid);
         return response;
     }
+    @PostMapping("/{uuid}")
+    public ResponseEntity<RolesResponse> addPermission(@PathVariable int uuid, @RequestBody AddPermissionsToRole request){
+        ResponseEntity<RolesResponse> response = rolesService.addPermission(uuid, request);
+        return response;
+    }
+
 
 }

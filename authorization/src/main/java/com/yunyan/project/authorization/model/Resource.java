@@ -36,8 +36,5 @@ public class Resource {
     private LocalDateTime updated_at = null;
     @Column(nullable = false)
     private boolean is_deleted = true;
-    public Roles getRole() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getRole'");
-    } 
+    
 }

@@ -14,7 +14,9 @@ import org.springframework.stereotype.Service;
 import com.yunyan.project.authorization.dto.ResourceRequest;
 import com.yunyan.project.authorization.dto.ResourceResponse;
 import com.yunyan.project.authorization.dto.Response;
+import com.yunyan.project.authorization.model.Permission;
 import com.yunyan.project.authorization.model.Resource;
+import com.yunyan.project.authorization.repository.PermissionRepository;
 import com.yunyan.project.authorization.repository.ResourceRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -23,6 +25,7 @@ import lombok.RequiredArgsConstructor;
 public class ResourceService {
     @Autowired
     private final ResourceRepository repository;
+    private final PermissionRepository permissionRepository;
 
     public ResponseEntity<ResourceResponse> createResource(ResourceRequest request) {
         Resource resource = null;
@@ -54,11 +57,11 @@ public class ResourceService {
     }
     private ResourceResponse mapToResourceResponse(Resource resource){
         return ResourceResponse.builder()
+        .uuid(resource.getUuid())
         .name(resource.getName())
         .end_point(resource.getEnd_points())
         .created_at(resource.getCreated_at())
         .updated_at(resource.getUpdated_at())
-        .role(resource.getRole())
         .build();
     }
     public ResponseEntity<ResourceResponse> updateResource(int uuid, ResourceRequest request) {
@@ -93,5 +96,6 @@ public class ResourceService {
             HttpStatus.BAD_REQUEST);
         }
     }
+    
 
 }

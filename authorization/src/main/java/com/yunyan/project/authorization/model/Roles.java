@@ -8,6 +8,8 @@ import lombok.Data;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.HashSet;
 
 import org.hibernate.annotations.ColumnDefault;
 
@@ -41,5 +43,5 @@ public class Roles {
     private boolean is_deleted = true;
 
     @ManyToMany
-    private List<Permission> allPermissions = new ArrayList<>();
+    private Set<Permission> permissions = new HashSet<>();
 }

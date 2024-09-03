@@ -4,6 +4,11 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.HashSet;
+
+
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -11,6 +16,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
@@ -31,7 +37,7 @@ public class Permission {
     private int uuid;
     @Column(nullable = false)
     private String name;
-    @Column(nullable = false)
+    @Column(nullable = true)
     private String end_point;
     @Column(nullable = false)
     private LocalDateTime created_at;
@@ -39,10 +45,14 @@ public class Permission {
     private LocalDateTime updated_at;
     @Column(nullable = false)
     private boolean is_deleted = false;
-    @ManyToOne
+    @JsonDeserialize
+    @ManyToOne(targetEntity = Resource.class)
     @JoinColumn(name = "resource_id")
     private Resource resource; 
     @ManyToMany
-    private List<Roles> assignedRoles = new ArrayList<>();
+    @JoinTable(name = "role_permission",
+            joinColumns = @JoinColumn(name = "permission_id", referencedColumnName = "uuid"),
+            inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "uuid"))
+    private Set<Roles> roles = new HashSet<>();
 
 }

@@ -16,5 +16,6 @@ public interface RolesRepository extends JpaRepository<Roles, Integer> {
     @Query("select e from Roles e where e.is_deleted=false")
     List<Roles> findAll();
 
+
     
 }

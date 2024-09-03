@@ -12,9 +12,13 @@ import org.springframework.stereotype.Service;
 
 import com.yunyan.project.authorization.dto.PermissionRequest;
 import com.yunyan.project.authorization.dto.PermissionResponse;
+import com.yunyan.project.authorization.dto.ResourceResponse;
 import com.yunyan.project.authorization.model.Permission;
+import com.yunyan.project.authorization.model.Resource;
 import com.yunyan.project.authorization.repository.PermissionRepository;
+import com.yunyan.project.authorization.repository.ResourceRepository;
 
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -22,14 +26,16 @@ import lombok.RequiredArgsConstructor;
 public class PermissionService {
     @Autowired
     private final PermissionRepository repository;
+    private final ResourceRepository resourceRepository;
     public ResponseEntity<PermissionResponse> createPermission(PermissionRequest request) {
         Permission permission = null;
         try {
+            Resource resource = resourceRepository.findById(request.getResource_id()).orElseThrow(() -> new EntityNotFoundException("Resource not found"));
             permission = Permission.builder()
             .name(request.getName())
             .end_point(request.getEnd_point())
             .created_at(LocalDateTime.now())
-            .resource(request.getResource_id())
+            .resource(resource)
             .build();
             repository.save(permission);
             
@@ -50,11 +56,13 @@ public class PermissionService {
         Optional<Permission> existingPermission = repository.findById(uuid);
         if(existingPermission.isPresent())
         {
+            Resource resource_id = resourceRepository.findById(request.getResource_id()).orElseThrow(() -> new EntityNotFoundException("Resource not found"));
+
             Permission tergetPermission = existingPermission.get();
             tergetPermission.setName(request.getName());
             tergetPermission.setEnd_point(request.getEnd_point());
             tergetPermission.setUpdated_at(LocalDateTime.now());
-            tergetPermission.setResource(request.getResource_id());
+            tergetPermission.setResource(resource_id);
             repository.save(tergetPermission);
             return new ResponseEntity<>((PermissionResponse.builder()
                 .msg("Update Successful")
@@ -104,5 +112,10 @@ public class PermissionService {
         .resource_id(permission.getResource())
         .build();
     }
+
+
+    // public List<Permission> getPermissionsByResourceId(int uuid) {
+    //     return  repository.findAllByID(uuid);
+    // }
 
 }

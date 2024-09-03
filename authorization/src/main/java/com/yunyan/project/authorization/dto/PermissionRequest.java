@@ -1,5 +1,7 @@
 package com.yunyan.project.authorization.dto;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.yunyan.project.authorization.model.Resource;
 
 import jakarta.validation.constraints.NotEmpty;
@@ -13,8 +15,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class PermissionRequest {
-    @NotEmpty
+    //@NotEmpty
     private String name;
     private String end_point;
-    private Resource resource_id;
+    private int resource_id;
+
 }
