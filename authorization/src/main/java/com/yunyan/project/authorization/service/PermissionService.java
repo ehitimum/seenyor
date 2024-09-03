@@ -48,7 +48,7 @@ public class PermissionService {
                 .resource_id(permission.getResource())
                 .build()),HttpStatus.CREATED);
         } catch (Exception e) {
-            return new ResponseEntity<>((PermissionResponse.builder().msg("Failed").build()),HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -75,10 +75,7 @@ public class PermissionService {
         }
         else
         {
-            return new ResponseEntity<>((PermissionResponse.builder()
-                .msg("Update Failed")
-                .build()),
-            HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
     public ResponseEntity<PermissionResponse> deletePermission(int uuid) {
