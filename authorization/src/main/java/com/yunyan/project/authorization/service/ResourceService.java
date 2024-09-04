@@ -36,15 +36,10 @@ public class ResourceService {
             .created_at(LocalDateTime.now())
             .build();
             repository.save(resource);
-            return new ResponseEntity<>((ResourceResponse.builder().msg("New Resource Added")
-                .name(resource.getName())
-                .end_point(resource.getEnd_points())
-                .created_at(resource.getCreated_at())
-                .build()), 
-            HttpStatus.CREATED);
+            return new ResponseEntity<>(mapToResourceResponse(resource), HttpStatus.CREATED);
 
         } catch (Exception e) {
-            return new ResponseEntity<>((ResourceResponse.builder().msg("Failed").build()), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 
         }
     }
@@ -65,36 +60,43 @@ public class ResourceService {
         .build();
     }
     public ResponseEntity<ResourceResponse> updateResource(int uuid, ResourceRequest request) {
-        Optional<Resource> existingResource = repository.findById(uuid);
-        if (existingResource.isPresent()) {
+        try {
+            Optional<Resource> existingResource = repository.findById(uuid);
+            if (existingResource.isEmpty()) {
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            }
             Resource targetResource = existingResource.get();
             targetResource.setName(request.getName());
             targetResource.setEnd_points(request.getEnd_point());
             targetResource.setUpdated_at(LocalDateTime.now());
             repository.save(targetResource);
-            return new ResponseEntity<>((ResourceResponse.builder().msg("Update Successful")
-                .name(targetResource.getName())
-                .end_point(targetResource.getEnd_points())
-                .updated_at(targetResource.getUpdated_at())
-                .build()),
-            HttpStatus.ACCEPTED);
-        }else{
-            return new ResponseEntity<>((ResourceResponse.builder().msg("Failed").build()),
-            HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(mapToResourceResponse(targetResource), HttpStatus.ACCEPTED);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
+        
+            
+            
+
     }
-    public ResponseEntity<ResourceResponse> deleteResource(int uuid) {
-        Optional<Resource> existingResource = repository.findById(uuid);
-        if (existingResource.isPresent()) {
+    public ResponseEntity<Response> deleteResource(int uuid) {
+        try {
+            Optional<Resource> existingResource = repository.findById(uuid);
+            if (existingResource.isEmpty()) {
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            }
             Resource targetResource = existingResource.get();
             targetResource.set_deleted(true);
             repository.save(targetResource);
-            return new ResponseEntity<>((ResourceResponse.builder().msg("Delete Successful").build()),
-            HttpStatus.ACCEPTED);
-        }else{
-            return new ResponseEntity<>((ResourceResponse.builder().msg("Failed").build()),
-            HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>((Response.builder().message("Delete Successful").build()),HttpStatus.ACCEPTED); 
+        } catch (Exception e) {
+            return new ResponseEntity<>((Response.builder().message("Failed").build()), HttpStatus.BAD_REQUEST);
         }
+          
+            
+        
+           
+        
     }
     
 

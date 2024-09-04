@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.yunyan.project.authorization.dto.ResourceRequest;
 import com.yunyan.project.authorization.dto.ResourceResponse;
+import com.yunyan.project.authorization.dto.Response;
 import com.yunyan.project.authorization.service.ResourceService;
 
 import lombok.RequiredArgsConstructor;
@@ -41,8 +42,8 @@ public class ResourceController {
         return response;
     }
     @PutMapping("/delete/{uuid}")
-    public ResponseEntity<ResourceResponse> deleteResource(@PathVariable int uuid){
-        ResponseEntity<ResourceResponse> response = resourceService.deleteResource(uuid);
+    public ResponseEntity<Response> deleteResource(@PathVariable int uuid){
+        ResponseEntity<Response> response = resourceService.deleteResource(uuid);
         return response;
     }
 

@@ -8,9 +8,7 @@ import java.util.Optional;
 import java.util.stream.*;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -31,7 +29,7 @@ public class RolesService {
     @Autowired
     private final RolesRepository rolesRepository;
     private final PermissionRepository permissionRepository;
-    public ResponseEntity<Response> createRoles(RolesRequest rolesRequest){
+    public ResponseEntity<RolesResponse> createRoles(RolesRequest rolesRequest){
         Roles role = null;
         try {
             role = Roles.builder()
@@ -40,11 +38,10 @@ public class RolesService {
             .created_At(LocalDateTime.now())
             .build();
             rolesRepository.save(role);
-            return new ResponseEntity<>((Response.builder().message("Successful").build()), HttpStatus.CREATED);
+            return new ResponseEntity<>(mapToRolesResponse(role), HttpStatus.CREATED);
         } catch (Exception e) {
-            return new ResponseEntity<>((Response.builder().message(e.getMessage()).build()), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        
     }
 
     public List<RolesResponse> getAllRoles(){
@@ -57,45 +54,45 @@ public class RolesService {
     
     private RolesResponse mapToRolesResponse(Roles role){
         return RolesResponse.builder()
-        .uuid(role.getUuid())
-        .name(role.getName())
-        .status(role.isStatus())
-        .created_At(role.getCreated_At())
-        .updated_At(role.getUpdated_At())
-        .permission_id(role.getPermissions())
-        .build();
+            .uuid(role.getUuid())
+            .name(role.getName())
+            .status(role.isStatus())
+            .created_At(role.getCreated_At())
+            .updated_At(role.getUpdated_At())
+            .permission_id(role.getPermissions())
+            .build();
     }
 
-    public ResponseEntity<Response> updateRole(int uuid, RolesRequest updaRolesRequest) {
-       Optional<Roles> existingRole = rolesRepository.findById(uuid);
-
-       if (existingRole.isPresent())
-       {
+    public ResponseEntity<RolesResponse> updateRole(int uuid, RolesRequest updaRolesRequest) {
+        try {
+            Optional<Roles> existingRole = rolesRepository.findById(uuid);
+            if (existingRole.isEmpty()) {
+                    return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            }
             Roles roleToUpdate = existingRole.get();
             roleToUpdate.setName(updaRolesRequest.getName());
             roleToUpdate.setUpdated_At(LocalDateTime.now());
             rolesRepository.save(roleToUpdate);
-            return new ResponseEntity<>((Response.builder().message("Update Successful").build()), HttpStatus.ACCEPTED); 
-       }
-       else
-       {
-            return new ResponseEntity<>((Response.builder().message("Role with ID " + uuid + " not found").build()),HttpStatus.BAD_REQUEST);
-       }
+            return new ResponseEntity<>(mapToRolesResponse(roleToUpdate), HttpStatus.ACCEPTED);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     public ResponseEntity<Response> soft_deleteRole(int uuid) {
-        Optional<Roles> targetRole = rolesRepository.findById(uuid);
-        if (targetRole.isPresent())
-        {
+        try {
+            Optional<Roles> targetRole = rolesRepository.findById(uuid);
+            if (targetRole.isEmpty()) {
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            }
             Roles roleToRemove = targetRole.get();
             roleToRemove.set_deleted(true);
             rolesRepository.save(roleToRemove);
-            return new ResponseEntity<>((Response.builder().message("Delete Successful").build()), HttpStatus.OK); 
+            return new ResponseEntity<>((Response.builder().message("Delete Successful").build()), HttpStatus.OK);        
         }
-        else
-        {
-            return new ResponseEntity<>((Response.builder().message("Role with ID " + uuid + " not found").build()),HttpStatus.BAD_REQUEST);
-        }
+        catch (Exception e) {
+            return new ResponseEntity<>((Response.builder().message("Role with ID not found").build()),HttpStatus.BAD_REQUEST);
+        } 
     }
 
     public ResponseEntity<RolesResponse> addPermission(int uuid, AddPermissionsToRole request) {
@@ -105,24 +102,11 @@ public class RolesService {
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             }
             Roles role = roleOptional.get();
-    
-            Set<Integer> permissionIds = request.getPermission_ids().stream()
-                                             .mapToInt(id -> id)
-                                             .boxed()
-                                             .collect(Collectors.toSet());
+            Set<Integer> permissionIds = request.getPermission_ids().stream().mapToInt(id -> id).boxed().collect(Collectors.toSet());
             List<Permission> permissions = permissionRepository.findAllById(permissionIds);
-    
             role.getPermissions().addAll(permissions);
             rolesRepository.save(role);
-    
-            return new ResponseEntity<>(RolesResponse.builder()
-                                        .name(role.getName())
-                                        .status(role.isStatus())
-                                        .created_At(role.getCreated_At())
-                                        .updated_At(role.getUpdated_At())
-                                        .permission_id(role.getPermissions())
-                                        .build(),
-                                    HttpStatus.ACCEPTED);
+            return new ResponseEntity<>(mapToRolesResponse(role), HttpStatus.ACCEPTED);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -137,13 +121,7 @@ public class RolesService {
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             }
             Roles role = roles.get();
-            return new ResponseEntity<>(RolesResponse.builder()
-                    .name(role.getName())
-                    .status(role.isStatus())
-                    .created_At(role.getCreated_At())
-                    .updated_At(role.getUpdated_At())
-                    .permission_id(role.getPermissions())
-                    .build(),
+            return new ResponseEntity<>(mapToRolesResponse(role),
                 HttpStatus.ACCEPTED);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
