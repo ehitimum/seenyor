@@ -52,8 +52,8 @@ public class PermissionController {
         return response;
     }
     @PutMapping("/delete/{uuid}")
-    public ResponseEntity<PermissionResponse> deletePermission(@PathVariable int uuid){
-        ResponseEntity<PermissionResponse> response = service.deletePermission(uuid);
+    public ResponseEntity<Response> deletePermission(@PathVariable int uuid){
+        ResponseEntity<Response> response = service.deletePermission(uuid);
         return response;
     }
 

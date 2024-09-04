@@ -1,7 +1,6 @@
 package com.yunyan.project.authorization.dto;
 import java.time.LocalDateTime;
 
-import com.yunyan.project.authorization.model.Resource;
 
 
 import lombok.AllArgsConstructor;
@@ -14,11 +13,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class PermissionResponse {
-    private String msg;
     private int uuid;
     private String name;
     private String end_point;
     private LocalDateTime created_at;
     private LocalDateTime updated_at; 
-    private Resource resource_id;
 }

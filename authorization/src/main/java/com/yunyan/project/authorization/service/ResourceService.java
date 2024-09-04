@@ -34,6 +34,7 @@ public class ResourceService {
             .name(request.getName())
             .end_points(request.getEnd_point())
             .created_at(LocalDateTime.now())
+            .updated_at(LocalDateTime.now())
             .build();
             repository.save(resource);
             return new ResponseEntity<>(mapToResourceResponse(resource), HttpStatus.CREATED);

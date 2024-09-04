@@ -36,6 +36,7 @@ public class RolesService {
             .name(rolesRequest.getName())
             .status(true)
             .created_At(LocalDateTime.now())
+            .updated_At(LocalDateTime.now())
             .build();
             rolesRepository.save(role);
             return new ResponseEntity<>(mapToRolesResponse(role), HttpStatus.CREATED);

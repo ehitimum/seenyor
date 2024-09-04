@@ -12,13 +12,10 @@ import org.springframework.stereotype.Service;
 
 import com.yunyan.project.authorization.dto.PermissionRequest;
 import com.yunyan.project.authorization.dto.PermissionResponse;
-import com.yunyan.project.authorization.dto.ResourceResponse;
 import com.yunyan.project.authorization.model.Permission;
-import com.yunyan.project.authorization.model.Resource;
 import com.yunyan.project.authorization.repository.PermissionRepository;
 import com.yunyan.project.authorization.repository.ResourceRepository;
-
-import jakarta.persistence.EntityNotFoundException;
+import com.yunyan.project.authorization.dto.Response;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -30,65 +27,53 @@ public class PermissionService {
     public ResponseEntity<PermissionResponse> createPermission(PermissionRequest request) {
         Permission permission = null;
         try {
-            Resource resource = resourceRepository.findById(request.getResource_id()).orElseThrow(() -> new EntityNotFoundException("Resource not found"));
+            //Resource resource = resourceRepository.findById(request.getResource_id()).orElseThrow(() -> new EntityNotFoundException("Resource not found"));
             permission = Permission.builder()
             .name(request.getName())
             .end_point(request.getEnd_point())
             .created_at(LocalDateTime.now())
-            .resource(resource)
+            .updated_at(LocalDateTime.now())
             .build();
             repository.save(permission);
-            
-            return new ResponseEntity<>((PermissionResponse.builder()
-                .msg("Successful")
-                .name(permission.getName())
-                .end_point(permission.getEnd_point())
-                .created_at(permission.getCreated_at())
-                .updated_at(permission.getUpdated_at())
-                .resource_id(permission.getResource())
-                .build()),HttpStatus.CREATED);
+            return new ResponseEntity<>(mapToPermissionResponse(permission),HttpStatus.CREATED);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
 
     public ResponseEntity<PermissionResponse> updatePermission(int uuid, PermissionRequest request) {
-        Optional<Permission> existingPermission = repository.findById(uuid);
-        if(existingPermission.isPresent())
-        {
-            Resource resource_id = resourceRepository.findById(request.getResource_id()).orElseThrow(() -> new EntityNotFoundException("Resource not found"));
-
-            Permission tergetPermission = existingPermission.get();
-            tergetPermission.setName(request.getName());
-            tergetPermission.setEnd_point(request.getEnd_point());
-            tergetPermission.setUpdated_at(LocalDateTime.now());
-            tergetPermission.setResource(resource_id);
-            repository.save(tergetPermission);
-            return new ResponseEntity<>((PermissionResponse.builder()
-                .msg("Update Successful")
-                .name(tergetPermission.getName())
-                .end_point(tergetPermission.getEnd_point())
-                .updated_at(tergetPermission.getUpdated_at())
-                .resource_id(tergetPermission.getResource())
-                .build()),
-            HttpStatus.ACCEPTED);
-        }
-        else
-        {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
+        try {
+            Optional<Permission> existingPermission = repository.findById(uuid);
+            if (existingPermission.isEmpty()) {
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            }
+                Permission tergetPermission = existingPermission.get();
+                tergetPermission.setName(request.getName());
+                tergetPermission.setEnd_point(request.getEnd_point());
+                tergetPermission.setUpdated_at(LocalDateTime.now());
+                repository.save(tergetPermission);
+                return new ResponseEntity<>(mapToPermissionResponse(tergetPermission), HttpStatus.ACCEPTED);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);        }
+       
+        
+            
+        
     }
-    public ResponseEntity<PermissionResponse> deletePermission(int uuid) {
-        Optional<Permission> existingPermission = repository.findById(uuid);
-        if(existingPermission.isPresent()){
+    public ResponseEntity<Response> deletePermission(int uuid) {
+        try {
+            Optional<Permission> existingPermission = repository.findById(uuid);
+            if (existingPermission.isEmpty()) {
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            }
             Permission targetPermission = existingPermission.get();
             targetPermission.set_deleted(true);
             repository.save(targetPermission);
-            return new ResponseEntity<>((PermissionResponse.builder().msg("Deleted").build()),HttpStatus.ACCEPTED);
+            return new ResponseEntity<>(Response.builder().message("Delete Successful!").build(), HttpStatus.ACCEPTED);
+        } catch (Exception e) {
+            return new ResponseEntity<>(Response.builder().message("Failed!").build(), HttpStatus.BAD_REQUEST);
         }
-        else{
-            return new ResponseEntity<>((PermissionResponse.builder().msg("Failed to Delete").build()),HttpStatus.BAD_REQUEST);
-        }
+        
 
     }
     public List<PermissionResponse> getPermissions() {
@@ -106,7 +91,6 @@ public class PermissionService {
         .end_point(permission.getEnd_point())
         .created_at(permission.getCreated_at())
         .updated_at(permission.getUpdated_at())
-        .resource_id(permission.getResource())
         .build();
     }
 

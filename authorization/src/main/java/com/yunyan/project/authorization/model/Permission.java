@@ -46,9 +46,6 @@ public class Permission {
     @Column(nullable = false)
     private boolean is_deleted = false;
     @JsonDeserialize
-    @ManyToOne(targetEntity = Resource.class)
-    @JoinColumn(name = "resource_id")
-    private Resource resource; 
     @ManyToMany
     @JoinTable(name = "role_permission",
             joinColumns = @JoinColumn(name = "permission_id", referencedColumnName = "uuid"),
