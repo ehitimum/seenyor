@@ -88,6 +88,7 @@ public class RolesService {
             }
             Roles roleToRemove = targetRole.get();
             roleToRemove.set_deleted(true);
+            roleToRemove.setStatus(false);
             rolesRepository.save(roleToRemove);
             return new ResponseEntity<>((Response.builder().message("Delete Successful").build()), HttpStatus.OK);        
         }

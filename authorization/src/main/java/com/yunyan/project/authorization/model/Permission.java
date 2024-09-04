@@ -5,6 +5,10 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+
 import java.util.HashSet;
 
 
@@ -20,6 +24,7 @@ import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -30,18 +35,20 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 @Entity
-@Table(name = "permission")
+@Table(name = "permission", uniqueConstraints = @UniqueConstraint(columnNames = "name"))
 public class Permission {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private int uuid;
-    @Column(nullable = false)
+    @Column(nullable = false, length = 255)
     private String name;
-    @Column(nullable = true)
+    @Column(nullable = true, length = 255)
     private String end_point;
     @Column(nullable = false)
+    @CreatedDate
     private LocalDateTime created_at;
-    @Column(nullable = true)
+    @Column(nullable = false)
+    @LastModifiedDate
     private LocalDateTime updated_at;
     @Column(nullable = false)
     private boolean is_deleted = false;

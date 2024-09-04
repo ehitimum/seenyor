@@ -20,7 +20,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class PermissionRequest {
     @NotEmpty
-    @Pattern(regexp = "^[a-zA-Z]+$")
+    @Pattern(regexp = "^[a-zA-Z ]+$")
     @Size(min = 3, max = 50)
     private String name;
     @NotEmpty
