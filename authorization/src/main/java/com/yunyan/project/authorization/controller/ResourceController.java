@@ -46,5 +46,6 @@ public class ResourceController {
         ResponseEntity<Response> response = resourceService.deleteResource(uuid);
         return response;
     }
+    
 
 }
