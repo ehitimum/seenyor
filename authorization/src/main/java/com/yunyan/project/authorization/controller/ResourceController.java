@@ -11,8 +11,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.yunyan.project.authorization.dto.AddPermissionsRequest;
 import com.yunyan.project.authorization.dto.ResourceRequest;
 import com.yunyan.project.authorization.dto.ResourceResponse;
 import com.yunyan.project.authorization.dto.Response;
@@ -44,6 +46,11 @@ public class ResourceController {
     @PutMapping("/delete/{uuid}")
     public ResponseEntity<Response> deleteResource(@PathVariable int uuid){
         ResponseEntity<Response> response = resourceService.deleteResource(uuid);
+        return response;
+    }
+    @PostMapping("/{uuid}")
+    public ResponseEntity<ResourceResponse> addPermissionToResource(@PathVariable int uuid, @RequestBody AddPermissionsRequest request){
+        ResponseEntity<ResourceResponse> response = resourceService.addPermissionToResource(uuid, request);
         return response;
     }
     
