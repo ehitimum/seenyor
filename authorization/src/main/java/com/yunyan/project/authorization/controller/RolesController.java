@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.yunyan.project.authorization.dto.AddPermissionsToRole;
+import com.yunyan.project.authorization.dto.AddPermissionsRequest;
 import com.yunyan.project.authorization.dto.Response;
 import com.yunyan.project.authorization.dto.RolesRequest;
 import com.yunyan.project.authorization.dto.RolesResponse;
@@ -63,7 +63,7 @@ public class RolesController {
         return response;
     }
     @PostMapping("/{uuid}")
-    public ResponseEntity<RolesResponse> addPermission(@PathVariable int uuid, @RequestBody AddPermissionsToRole request){
+    public ResponseEntity<RolesResponse> addPermission(@PathVariable int uuid, @RequestBody AddPermissionsRequest request){
         ResponseEntity<RolesResponse> response = rolesService.addPermission(uuid, request);
         return response;
     }
