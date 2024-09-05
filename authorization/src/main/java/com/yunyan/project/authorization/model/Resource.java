@@ -1,21 +1,21 @@
 package com.yunyan.project.authorization.model;
 
 import java.time.LocalDateTime;
-import java.util.Set;
 
+import java.util.Set;
+import java.util.HashSet;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
 import jakarta.annotation.Generated;
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 import lombok.AllArgsConstructor;
@@ -45,9 +45,7 @@ public class Resource {
     private LocalDateTime updated_at;
     @Column(nullable = false)
     private boolean is_deleted = true;
-
-    @OneToMany(mappedBy = "resource", cascade = CascadeType.ALL)
-    private Set<ResourcesPermissions> resourcesPermissions;
-    
+    @ManyToMany
+    private Set<Permission> permissions = new HashSet<>();
     
 }
