@@ -12,7 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import com.yunyan.project.authorization.dto.AddPermissionsToRole;
+import com.yunyan.project.authorization.dto.AddPermissionsRequest;
 import com.yunyan.project.authorization.dto.Response;
 import com.yunyan.project.authorization.dto.RolesRequest;
 import com.yunyan.project.authorization.dto.RolesResponse;
@@ -97,7 +97,7 @@ public class RolesService {
         } 
     }
 
-    public ResponseEntity<RolesResponse> addPermission(int uuid, AddPermissionsToRole request) {
+    public ResponseEntity<RolesResponse> addPermission(int uuid, AddPermissionsRequest request) {
         try {
             Optional<Roles> roleOptional = rolesRepository.findById(uuid);
             if (roleOptional.isEmpty()) {

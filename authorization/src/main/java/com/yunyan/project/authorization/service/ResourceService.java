@@ -4,13 +4,16 @@ import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 import java.util.Optional;
-
+import java.util.stream.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import com.yunyan.project.authorization.dto.AddPermissionsRequest;
 import com.yunyan.project.authorization.dto.ResourceRequest;
 import com.yunyan.project.authorization.dto.ResourceResponse;
 import com.yunyan.project.authorization.dto.Response;
@@ -58,6 +61,7 @@ public class ResourceService {
         .end_point(resource.getEnd_points())
         .created_at(resource.getCreated_at())
         .updated_at(resource.getUpdated_at())
+        .permission_id(resource.getPermissions())
         .build();
     }
     public ResponseEntity<ResourceResponse> updateResource(int uuid, ResourceRequest request) {
@@ -92,12 +96,21 @@ public class ResourceService {
             return new ResponseEntity<>((Response.builder().message("Delete Successful").build()),HttpStatus.ACCEPTED); 
         } catch (Exception e) {
             return new ResponseEntity<>((Response.builder().message("Failed").build()), HttpStatus.BAD_REQUEST);
+        }  
+        
+    }
+    public ResponseEntity<ResourceResponse> addPermissionToResource(int uuid, AddPermissionsRequest request) {
+        try {
+            Resource resource = repository.findById(uuid).orElseThrow(()->new ResourceNotFoundException("Resource Id"+uuid+" not found"));
+            Set<Integer> permissionIds = request.getPermission_ids().stream().mapToInt(id -> id).boxed().collect(Collectors.toSet());
+            List<Permission> permissions = permissionRepository.findAllById(permissionIds);
+            resource.getPermissions().addAll(permissions);
+            repository.save(resource);
+            return new ResponseEntity<>(mapToResourceResponse(resource), HttpStatus.CREATED);
+
+        } catch (Exception e) {
+            return new ResponseEntity<ResourceResponse>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
-          
-            
-        
-           
-        
     }
     
 
