@@ -39,7 +39,7 @@ import lombok.NoArgsConstructor;
 public class Permission {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    private int uuid;
+    private int id;
     @Column(nullable = false, length = 255)
     private String name;
     @Column(nullable = true, length = 255)
@@ -55,14 +55,14 @@ public class Permission {
     @JsonDeserialize
     @ManyToMany
     @JoinTable(name = "role_permission",
-            joinColumns = @JoinColumn(name = "permission_id", referencedColumnName = "uuid"),
-            inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "uuid"))
+            joinColumns = @JoinColumn(name = "permission_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
     private Set<Roles> roles = new HashSet<>();
     
     @ManyToMany
     @JoinTable(name = "resource_permission",
-            joinColumns = @JoinColumn(name = "permission_id", referencedColumnName = "uuid"),
-            inverseJoinColumns = @JoinColumn(name = "resource_id", referencedColumnName = "uuid"))
+            joinColumns = @JoinColumn(name = "permission_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "resource_id", referencedColumnName = "id"))
     private Set<Resource> resources = new HashSet<>();
 
 }
