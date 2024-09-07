@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class PermissionResponse {
-    private int uuid;
+    private int id;
     private String name;
     private String end_point;
     private LocalDateTime created_at;

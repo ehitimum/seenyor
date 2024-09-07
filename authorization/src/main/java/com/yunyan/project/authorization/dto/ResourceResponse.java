@@ -16,7 +16,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 public class ResourceResponse {
-    private int uuid;
+    private int id;
     private String name;
     private String end_point;
     private LocalDateTime created_at;

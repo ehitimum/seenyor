@@ -16,7 +16,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 
 public class RolesResponse {
-    private int uuid;
+    private int id;
     private String name;
     private boolean status;
     private LocalDateTime created_At;

@@ -34,6 +34,15 @@ git clone https://github.com/ehitimum/seenyor.git
 ## Running
 1. Go to \src\main\java\com\yunyan\project\authorization\AuthorizationApplication.java and run it.
 2. If successfully running you can start hitting the API
+
+#### Running from command:
+1. Head to the project directory seenyor
+2. In the terminal execute this command
+```
+java -jar .\authorization\target\authorization-0.0.1-SNAPSHOT.jar
+```
+3. This will execute the jar file of this project.
+
 ## Server
 1. Server is running at http://localhost:8080/
 
