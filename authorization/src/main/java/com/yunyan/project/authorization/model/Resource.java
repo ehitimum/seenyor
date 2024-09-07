@@ -32,7 +32,7 @@ import lombok.NoArgsConstructor;
 public class Resource {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    private int uuid;
+    private int id;
     @Column(nullable = false, length = 255)
     private String name;
     @Column(nullable = false, length = 255)
@@ -44,7 +44,7 @@ public class Resource {
     @LastModifiedDate
     private LocalDateTime updated_at;
     @Column(nullable = false)
-    private boolean is_deleted = true;
+    private boolean is_deleted = false;
     @ManyToMany
     private Set<Permission> permissions = new HashSet<>();
     
