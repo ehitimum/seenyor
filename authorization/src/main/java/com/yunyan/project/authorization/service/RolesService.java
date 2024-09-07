@@ -55,7 +55,7 @@ public class RolesService {
     
     private RolesResponse mapToRolesResponse(Roles role){
         return RolesResponse.builder()
-            .uuid(role.getUuid())
+            .id(role.getId())
             .name(role.getName())
             .status(role.isStatus())
             .created_At(role.getCreated_At())
@@ -105,7 +105,7 @@ public class RolesService {
             }
             Roles role = roleOptional.get();
             Set<Integer> permissionIds = request.getPermission_ids().stream().mapToInt(id -> id).boxed().collect(Collectors.toSet());
-            List<Permission> permissions = permissionRepository.findAllById(permissionIds);
+            List<Permission> permissions = permissionRepository.findAllByPermissionId(permissionIds);
             role.getPermissions().addAll(permissions);
             rolesRepository.save(role);
             return new ResponseEntity<>(mapToRolesResponse(role), HttpStatus.ACCEPTED);
