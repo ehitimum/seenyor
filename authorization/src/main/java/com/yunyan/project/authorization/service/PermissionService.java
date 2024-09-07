@@ -86,7 +86,7 @@ public class PermissionService {
     
     private PermissionResponse mapToPermissionResponse(Permission permission){
         return PermissionResponse.builder()
-        .uuid(permission.getUuid())
+        .id(permission.getId())
         .name(permission.getName())
         .end_point(permission.getEnd_point())
         .created_at(permission.getCreated_at())
@@ -95,8 +95,5 @@ public class PermissionService {
     }
 
 
-    // public List<Permission> getPermissionsByResourceId(int uuid) {
-    //     return  repository.findAllByID(uuid);
-    // }
-
+    
 }

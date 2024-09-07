@@ -56,7 +56,7 @@ public class ResourceService {
     }
     private ResourceResponse mapToResourceResponse(Resource resource){
         return ResourceResponse.builder()
-        .uuid(resource.getUuid())
+        .id(resource.getId())
         .name(resource.getName())
         .end_point(resource.getEnd_points())
         .created_at(resource.getCreated_at())
