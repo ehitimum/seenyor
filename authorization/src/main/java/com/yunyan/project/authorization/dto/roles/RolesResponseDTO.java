@@ -1,10 +1,9 @@
-package com.yunyan.project.authorization.dto;
+package com.yunyan.project.authorization.dto.roles;
 
 import java.time.LocalDateTime;
 import java.util.Set;
 
 import com.yunyan.project.authorization.model.Permission;
-import com.yunyan.project.authorization.model.Roles;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -12,15 +11,15 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
-public class ResourceResponse {
+
+public class RolesResponseDTO {
     private int id;
     private String name;
-    private String end_point;
-    private LocalDateTime created_at;
-    private LocalDateTime updated_at;
+    private boolean status;
+    private LocalDateTime created_At;
+    private LocalDateTime updated_At;
     private Set<Permission> permission_id;
 }
-

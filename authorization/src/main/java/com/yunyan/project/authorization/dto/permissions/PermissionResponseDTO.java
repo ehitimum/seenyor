@@ -1,4 +1,4 @@
-package com.yunyan.project.authorization.dto;
+package com.yunyan.project.authorization.dto.permissions;
 import java.time.LocalDateTime;
 
 
@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class PermissionResponse {
+public class PermissionResponseDTO {
     private int id;
     private String name;
     private String end_point;

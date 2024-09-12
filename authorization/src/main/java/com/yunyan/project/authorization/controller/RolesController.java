@@ -15,10 +15,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.yunyan.project.authorization.dto.AddPermissionsRequest;
-import com.yunyan.project.authorization.dto.Response;
-import com.yunyan.project.authorization.dto.RolesRequest;
-import com.yunyan.project.authorization.dto.RolesResponse;
+import com.yunyan.project.authorization.dto.commons.ConnectPermissionsDTO;
+import com.yunyan.project.authorization.dto.commons.ResponseDTO;
+import com.yunyan.project.authorization.dto.roles.CreateRolesDTO;
+import com.yunyan.project.authorization.dto.roles.RolesResponseDTO;
 import com.yunyan.project.authorization.service.RolesService;
 import lombok.RequiredArgsConstructor;
 
@@ -37,34 +37,34 @@ public class RolesController {
     }
 
     @PostMapping
-    public ResponseEntity<RolesResponse> createRoles(@RequestBody @Validated RolesRequest rolesRequest){
-        ResponseEntity<RolesResponse> response = rolesService.createRoles(rolesRequest);
+    public ResponseEntity<RolesResponseDTO> createRoles(@RequestBody @Validated CreateRolesDTO rolesRequest){
+        ResponseEntity<RolesResponseDTO> response = rolesService.createRoles(rolesRequest);
         return response;
     }
 
     @GetMapping
-    public List<RolesResponse> getAllRoles(){
+    public List<RolesResponseDTO> getAllRoles(){
         return rolesService.getAllRoles();
     }
     @GetMapping("/{uuid}")
-    public ResponseEntity<RolesResponse> getOneRole(@PathVariable int uuid){
+    public ResponseEntity<RolesResponseDTO> getOneRole(@PathVariable int uuid){
         return rolesService.getOneRole(uuid);
     }
 
     @PutMapping("/{uuid}")
-    public ResponseEntity<RolesResponse> updateRole(@PathVariable int uuid, @RequestBody @Validated RolesRequest updateRolesRequest){
-        ResponseEntity<RolesResponse> response = rolesService.updateRole(uuid, updateRolesRequest);
+    public ResponseEntity<RolesResponseDTO> updateRole(@PathVariable int uuid, @RequestBody @Validated CreateRolesDTO updateRolesRequest){
+        ResponseEntity<RolesResponseDTO> response = rolesService.updateRole(uuid, updateRolesRequest);
         return response;
     }
 
     @PutMapping("/delete/{uuid}")
-    public ResponseEntity<Response> soft_deleteRole(@PathVariable int uuid){
-        ResponseEntity<Response> response = rolesService.soft_deleteRole(uuid);
+    public ResponseEntity<ResponseDTO> soft_deleteRole(@PathVariable int uuid){
+        ResponseEntity<ResponseDTO> response = rolesService.soft_deleteRole(uuid);
         return response;
     }
     @PostMapping("/{uuid}")
-    public ResponseEntity<RolesResponse> addPermission(@PathVariable int uuid, @RequestBody AddPermissionsRequest request){
-        ResponseEntity<RolesResponse> response = rolesService.addPermission(uuid, request);
+    public ResponseEntity<RolesResponseDTO> addPermission(@PathVariable int uuid, @RequestBody ConnectPermissionsDTO request){
+        ResponseEntity<RolesResponseDTO> response = rolesService.addPermission(uuid, request);
         return response;
     }
 

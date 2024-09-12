@@ -10,12 +10,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import com.yunyan.project.authorization.dto.PermissionRequest;
-import com.yunyan.project.authorization.dto.PermissionResponse;
 import com.yunyan.project.authorization.model.Permission;
 import com.yunyan.project.authorization.repository.PermissionRepository;
 import com.yunyan.project.authorization.repository.ResourceRepository;
-import com.yunyan.project.authorization.dto.Response;
+import com.yunyan.project.authorization.dto.commons.ResponseDTO;
+import com.yunyan.project.authorization.dto.permissions.CreatePermissionDTO;
+import com.yunyan.project.authorization.dto.permissions.PermissionResponseDTO;
+
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -24,7 +25,7 @@ public class PermissionService {
     @Autowired
     private final PermissionRepository repository;
     private final ResourceRepository resourceRepository;
-    public ResponseEntity<PermissionResponse> createPermission(PermissionRequest request) {
+    public ResponseEntity<PermissionResponseDTO> createPermission(CreatePermissionDTO request) {
         Permission permission = null;
         try {
             //Resource resource = resourceRepository.findById(request.getResource_id()).orElseThrow(() -> new EntityNotFoundException("Resource not found"));
@@ -41,7 +42,7 @@ public class PermissionService {
         }
     }
 
-    public ResponseEntity<PermissionResponse> updatePermission(int uuid, PermissionRequest request) {
+    public ResponseEntity<PermissionResponseDTO> updatePermission(int uuid, CreatePermissionDTO request) {
         try {
             Optional<Permission> existingPermission = repository.findById(uuid);
             if (existingPermission.isEmpty()) {
@@ -60,7 +61,7 @@ public class PermissionService {
             
         
     }
-    public ResponseEntity<Response> deletePermission(int uuid) {
+    public ResponseEntity<ResponseDTO> deletePermission(int uuid) {
         try {
             Optional<Permission> existingPermission = repository.findById(uuid);
             if (existingPermission.isEmpty()) {
@@ -69,14 +70,14 @@ public class PermissionService {
             Permission targetPermission = existingPermission.get();
             targetPermission.set_deleted(true);
             repository.save(targetPermission);
-            return new ResponseEntity<>(Response.builder().message("Delete Successful!").build(), HttpStatus.ACCEPTED);
+            return new ResponseEntity<>(ResponseDTO.builder().message("Delete Successful!").build(), HttpStatus.ACCEPTED);
         } catch (Exception e) {
-            return new ResponseEntity<>(Response.builder().message("Failed!").build(), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(ResponseDTO.builder().message("Failed!").build(), HttpStatus.BAD_REQUEST);
         }
         
 
     }
-    public List<PermissionResponse> getPermissions() {
+    public List<PermissionResponseDTO> getPermissions() {
         List<Permission> permissions = repository.findAll();
         if (permissions.isEmpty()){
             return Collections.emptyList();
@@ -84,8 +85,8 @@ public class PermissionService {
         return permissions.stream().map(this::mapToPermissionResponse).toList();
     }
     
-    private PermissionResponse mapToPermissionResponse(Permission permission){
-        return PermissionResponse.builder()
+    private PermissionResponseDTO mapToPermissionResponse(Permission permission){
+        return PermissionResponseDTO.builder()
         .id(permission.getId())
         .name(permission.getName())
         .end_point(permission.getEnd_point())

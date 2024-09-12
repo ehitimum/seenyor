@@ -7,15 +7,16 @@ import java.util.Set;
 import java.util.Optional;
 import java.util.stream.*;
 
+import org.hibernate.mapping.Collection;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import com.yunyan.project.authorization.dto.AddPermissionsRequest;
-import com.yunyan.project.authorization.dto.Response;
-import com.yunyan.project.authorization.dto.RolesRequest;
-import com.yunyan.project.authorization.dto.RolesResponse;
+import com.yunyan.project.authorization.dto.commons.ConnectPermissionsDTO;
+import com.yunyan.project.authorization.dto.commons.ResponseDTO;
+import com.yunyan.project.authorization.dto.roles.CreateRolesDTO;
+import com.yunyan.project.authorization.dto.roles.RolesResponseDTO;
 import com.yunyan.project.authorization.model.Permission;
 import com.yunyan.project.authorization.model.Roles;
 import com.yunyan.project.authorization.repository.PermissionRepository;
@@ -29,7 +30,7 @@ public class RolesService {
     @Autowired
     private final RolesRepository rolesRepository;
     private final PermissionRepository permissionRepository;
-    public ResponseEntity<RolesResponse> createRoles(RolesRequest rolesRequest){
+    public ResponseEntity<RolesResponseDTO> createRoles(CreateRolesDTO rolesRequest){
         Roles role = null;
         try {
             role = Roles.builder()
@@ -45,16 +46,21 @@ public class RolesService {
         }
     }
 
-    public List<RolesResponse> getAllRoles(){
-        List<Roles> roles = rolesRepository.findAll();
-        if (roles.isEmpty()){
+    public List<RolesResponseDTO> getAllRoles(){
+        try {
+            List<Roles> roles = rolesRepository.findAll();
+            if (roles.isEmpty()){
+                return Collections.emptyList();
+            }
+            return roles.stream().map(this::mapToRolesResponse).toList();
+        } catch (Exception e) {
             return Collections.emptyList();
         }
-        return roles.stream().map(this::mapToRolesResponse).toList();
+       
     }
     
-    private RolesResponse mapToRolesResponse(Roles role){
-        return RolesResponse.builder()
+    private RolesResponseDTO mapToRolesResponse(Roles role){
+        return RolesResponseDTO.builder()
             .id(role.getId())
             .name(role.getName())
             .status(role.isStatus())
@@ -64,7 +70,7 @@ public class RolesService {
             .build();
     }
 
-    public ResponseEntity<RolesResponse> updateRole(int uuid, RolesRequest updaRolesRequest) {
+    public ResponseEntity<RolesResponseDTO> updateRole(int uuid, CreateRolesDTO updaRolesRequest) {
         try {
             Optional<Roles> existingRole = rolesRepository.findById(uuid);
             if (existingRole.isEmpty()) {
@@ -80,7 +86,7 @@ public class RolesService {
         }
     }
 
-    public ResponseEntity<Response> soft_deleteRole(int uuid) {
+    public ResponseEntity<ResponseDTO> soft_deleteRole(int uuid) {
         try {
             Optional<Roles> targetRole = rolesRepository.findById(uuid);
             if (targetRole.isEmpty()) {
@@ -90,14 +96,14 @@ public class RolesService {
             roleToRemove.set_deleted(true);
             roleToRemove.setStatus(false);
             rolesRepository.save(roleToRemove);
-            return new ResponseEntity<>((Response.builder().message("Delete Successful").build()), HttpStatus.OK);        
+            return new ResponseEntity<>((ResponseDTO.builder().message("Delete Successful").build()), HttpStatus.OK);        
         }
         catch (Exception e) {
-            return new ResponseEntity<>((Response.builder().message("Role with ID not found").build()),HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>((ResponseDTO.builder().message("Role with ID not found").build()),HttpStatus.BAD_REQUEST);
         } 
     }
 
-    public ResponseEntity<RolesResponse> addPermission(int uuid, AddPermissionsRequest request) {
+    public ResponseEntity<RolesResponseDTO> addPermission(int uuid, ConnectPermissionsDTO request) {
         try {
             Optional<Roles> roleOptional = rolesRepository.findById(uuid);
             if (roleOptional.isEmpty()) {
@@ -105,7 +111,7 @@ public class RolesService {
             }
             Roles role = roleOptional.get();
             Set<Integer> permissionIds = request.getPermission_ids().stream().mapToInt(id -> id).boxed().collect(Collectors.toSet());
-            List<Permission> permissions = permissionRepository.findAllByPermissionId(permissionIds);
+            List<Permission> permissions = permissionRepository.findAllById(permissionIds);
             role.getPermissions().addAll(permissions);
             rolesRepository.save(role);
             return new ResponseEntity<>(mapToRolesResponse(role), HttpStatus.ACCEPTED);
@@ -116,7 +122,7 @@ public class RolesService {
 
     }
 
-    public ResponseEntity<RolesResponse> getOneRole(int uuid) {
+    public ResponseEntity<RolesResponseDTO> getOneRole(int uuid) {
         try {
             Optional<Roles> roles = rolesRepository.findById(uuid);
             if (roles.isEmpty()) {

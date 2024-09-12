@@ -1,10 +1,6 @@
-package com.yunyan.project.authorization.dto;
+package com.yunyan.project.authorization.dto.resources;
 
 import org.hibernate.validator.constraints.URL;
-
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.yunyan.project.authorization.model.Resource;
 
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Pattern;
@@ -18,14 +14,15 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class PermissionRequest {
+public class CretaeResourceDTO {
+
     @NotEmpty
     @Pattern(regexp = "^[a-zA-Z ]+$")
     @Size(min = 3, max = 50)
     private String name;
+
     @NotEmpty
     @URL
     @Size(max = 255)
     private String end_point;
-
 }

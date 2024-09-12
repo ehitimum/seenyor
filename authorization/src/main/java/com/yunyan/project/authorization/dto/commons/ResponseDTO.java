@@ -1,4 +1,4 @@
-package com.yunyan.project.authorization.dto;
+package com.yunyan.project.authorization.dto.commons;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,6 +9,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class Response {
+public class ResponseDTO {
     private String message;
 }

@@ -14,10 +14,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.yunyan.project.authorization.dto.AddPermissionsRequest;
-import com.yunyan.project.authorization.dto.ResourceRequest;
-import com.yunyan.project.authorization.dto.ResourceResponse;
-import com.yunyan.project.authorization.dto.Response;
+import com.yunyan.project.authorization.dto.commons.ConnectPermissionsDTO;
+import com.yunyan.project.authorization.dto.commons.ResponseDTO;
+import com.yunyan.project.authorization.dto.resources.CretaeResourceDTO;
+import com.yunyan.project.authorization.dto.resources.ResourceResponseDTO;
 import com.yunyan.project.authorization.service.ResourceService;
 
 import lombok.RequiredArgsConstructor;
@@ -30,27 +30,27 @@ public class ResourceController {
     private final ResourceService resourceService;
 
     @PostMapping
-    public ResponseEntity<ResourceResponse> createResource(@RequestBody @Validated ResourceRequest request){
-        ResponseEntity<ResourceResponse> response = resourceService.createResource(request);
+    public ResponseEntity<ResourceResponseDTO> createResource(@RequestBody @Validated CretaeResourceDTO request){
+        ResponseEntity<ResourceResponseDTO> response = resourceService.createResource(request);
         return response; 
     }
     @GetMapping
-    public List<ResourceResponse> getResources(){
+    public List<ResourceResponseDTO> getResources(){
         return resourceService.getAllResource();
     }
     @PutMapping("/{uuid}")
-    public ResponseEntity<ResourceResponse> updateResource(@PathVariable int uuid, @RequestBody @Validated ResourceRequest request){
-        ResponseEntity<ResourceResponse> response = resourceService.updateResource(uuid, request);
+    public ResponseEntity<ResourceResponseDTO> updateResource(@PathVariable int uuid, @RequestBody @Validated CretaeResourceDTO request){
+        ResponseEntity<ResourceResponseDTO> response = resourceService.updateResource(uuid, request);
         return response;
     }
     @PutMapping("/delete/{uuid}")
-    public ResponseEntity<Response> deleteResource(@PathVariable int uuid){
-        ResponseEntity<Response> response = resourceService.deleteResource(uuid);
+    public ResponseEntity<ResponseDTO> deleteResource(@PathVariable int uuid){
+        ResponseEntity<ResponseDTO> response = resourceService.deleteResource(uuid);
         return response;
     }
     @PostMapping("/{uuid}")
-    public ResponseEntity<ResourceResponse> addPermissionToResource(@PathVariable int uuid, @RequestBody AddPermissionsRequest request){
-        ResponseEntity<ResourceResponse> response = resourceService.addPermissionToResource(uuid, request);
+    public ResponseEntity<ResourceResponseDTO> addPermissionToResource(@PathVariable int uuid, @RequestBody ConnectPermissionsDTO request){
+        ResponseEntity<ResourceResponseDTO> response = resourceService.addPermissionToResource(uuid, request);
         return response;
     }
     

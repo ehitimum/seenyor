@@ -13,10 +13,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import com.yunyan.project.authorization.dto.AddPermissionsRequest;
-import com.yunyan.project.authorization.dto.ResourceRequest;
-import com.yunyan.project.authorization.dto.ResourceResponse;
-import com.yunyan.project.authorization.dto.Response;
+import com.yunyan.project.authorization.dto.commons.ConnectPermissionsDTO;
+import com.yunyan.project.authorization.dto.commons.ResponseDTO;
+import com.yunyan.project.authorization.dto.resources.CretaeResourceDTO;
+import com.yunyan.project.authorization.dto.resources.ResourceResponseDTO;
 import com.yunyan.project.authorization.model.Permission;
 import com.yunyan.project.authorization.model.Resource;
 import com.yunyan.project.authorization.repository.PermissionRepository;
@@ -30,7 +30,7 @@ public class ResourceService {
     private final ResourceRepository repository;
     private final PermissionRepository permissionRepository;
 
-    public ResponseEntity<ResourceResponse> createResource(ResourceRequest request) {
+    public ResponseEntity<ResourceResponseDTO> createResource(CretaeResourceDTO request) {
         Resource resource = null;
         try {
             resource = Resource.builder()
@@ -47,15 +47,15 @@ public class ResourceService {
 
         }
     }
-    public List<ResourceResponse> getAllResource(){
+    public List<ResourceResponseDTO> getAllResource(){
         List<Resource> resource = repository.findAll();
         if(resource.isEmpty()){
             return Collections.emptyList();
         }
         return resource.stream().map(this::mapToResourceResponse).toList();
     }
-    private ResourceResponse mapToResourceResponse(Resource resource){
-        return ResourceResponse.builder()
+    private ResourceResponseDTO mapToResourceResponse(Resource resource){
+        return ResourceResponseDTO.builder()
         .id(resource.getId())
         .name(resource.getName())
         .end_point(resource.getEnd_points())
@@ -64,7 +64,7 @@ public class ResourceService {
         .permission_id(resource.getPermissions())
         .build();
     }
-    public ResponseEntity<ResourceResponse> updateResource(int uuid, ResourceRequest request) {
+    public ResponseEntity<ResourceResponseDTO> updateResource(int uuid, CretaeResourceDTO request) {
         try {
             Optional<Resource> existingResource = repository.findById(uuid);
             if (existingResource.isEmpty()) {
@@ -84,7 +84,7 @@ public class ResourceService {
             
 
     }
-    public ResponseEntity<Response> deleteResource(int uuid) {
+    public ResponseEntity<ResponseDTO> deleteResource(int uuid) {
         try {
             Optional<Resource> existingResource = repository.findById(uuid);
             if (existingResource.isEmpty()) {
@@ -93,13 +93,13 @@ public class ResourceService {
             Resource targetResource = existingResource.get();
             targetResource.set_deleted(true);
             repository.save(targetResource);
-            return new ResponseEntity<>((Response.builder().message("Delete Successful").build()),HttpStatus.ACCEPTED); 
+            return new ResponseEntity<>((ResponseDTO.builder().message("Delete Successful").build()),HttpStatus.ACCEPTED); 
         } catch (Exception e) {
-            return new ResponseEntity<>((Response.builder().message("Failed").build()), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>((ResponseDTO.builder().message("Failed").build()), HttpStatus.BAD_REQUEST);
         }  
         
     }
-    public ResponseEntity<ResourceResponse> addPermissionToResource(int uuid, AddPermissionsRequest request) {
+    public ResponseEntity<ResourceResponseDTO> addPermissionToResource(int uuid, ConnectPermissionsDTO request) {
         try {
             Resource resource = repository.findById(uuid).orElseThrow(()->new ResourceNotFoundException("Resource Id"+uuid+" not found"));
             Set<Integer> permissionIds = request.getPermission_ids().stream().mapToInt(id -> id).boxed().collect(Collectors.toSet());
@@ -109,7 +109,7 @@ public class ResourceService {
             return new ResponseEntity<>(mapToResourceResponse(resource), HttpStatus.CREATED);
 
         } catch (Exception e) {
-            return new ResponseEntity<ResourceResponse>(HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<ResourceResponseDTO>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
     

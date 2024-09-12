@@ -15,11 +15,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.yunyan.project.authorization.dto.PermissionRequest;
-import com.yunyan.project.authorization.dto.PermissionResponse;
-import com.yunyan.project.authorization.dto.ResourceResponse;
-import com.yunyan.project.authorization.dto.Response;
-import com.yunyan.project.authorization.dto.RolesResponse;
+import com.yunyan.project.authorization.dto.commons.ResponseDTO;
+import com.yunyan.project.authorization.dto.permissions.CreatePermissionDTO;
+import com.yunyan.project.authorization.dto.permissions.PermissionResponseDTO;
+import com.yunyan.project.authorization.dto.resources.ResourceResponseDTO;
 import com.yunyan.project.authorization.model.Permission;
 import com.yunyan.project.authorization.service.PermissionService;
 
@@ -32,12 +31,12 @@ public class PermissionController {
     @Autowired
     private final PermissionService service;
     @PostMapping
-    public ResponseEntity<PermissionResponse> createPermission(@RequestBody @Validated PermissionRequest request){
-        ResponseEntity<PermissionResponse> response = service.createPermission(request); 
+    public ResponseEntity<PermissionResponseDTO> createPermission(@RequestBody @Validated CreatePermissionDTO request){
+        ResponseEntity<PermissionResponseDTO> response = service.createPermission(request); 
         return response;
     }
     @GetMapping
-    public List<PermissionResponse> getPermissions(){
+    public List<PermissionResponseDTO> getPermissions(){
         return service.getPermissions();
     }
     // @GetMapping("/{uuid}")
@@ -47,13 +46,13 @@ public class PermissionController {
     // }
 
     @PutMapping("/{uuid}")
-    public ResponseEntity<PermissionResponse> updatePermission(@PathVariable int uuid, @RequestBody @Validated PermissionRequest request){
-        ResponseEntity<PermissionResponse> response = service.updatePermission(uuid,request); 
+    public ResponseEntity<PermissionResponseDTO> updatePermission(@PathVariable int uuid, @RequestBody @Validated CreatePermissionDTO request){
+        ResponseEntity<PermissionResponseDTO> response = service.updatePermission(uuid,request); 
         return response;
     }
     @PutMapping("/delete/{uuid}")
-    public ResponseEntity<Response> deletePermission(@PathVariable int uuid){
-        ResponseEntity<Response> response = service.deletePermission(uuid);
+    public ResponseEntity<ResponseDTO> deletePermission(@PathVariable int uuid){
+        ResponseEntity<ResponseDTO> response = service.deletePermission(uuid);
         return response;
     }
 
