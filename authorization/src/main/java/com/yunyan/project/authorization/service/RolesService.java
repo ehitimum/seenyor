@@ -3,17 +3,18 @@ package com.yunyan.project.authorization.service;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
-import java.util.Set;
 import java.util.Optional;
-import java.util.stream.*;
+import java.util.Set;
+import java.util.stream.Collectors;
 
-import org.hibernate.mapping.Collection;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.yunyan.project.authorization.dto.commons.ConnectPermissionsDTO;
+import com.yunyan.project.authorization.dto.commons.FieldErrorDTO;
 import com.yunyan.project.authorization.dto.commons.ResponseDTO;
 import com.yunyan.project.authorization.dto.roles.CreateRolesDTO;
 import com.yunyan.project.authorization.dto.roles.RolesResponseDTO;
@@ -30,7 +31,9 @@ public class RolesService {
     @Autowired
     private final RolesRepository rolesRepository;
     private final PermissionRepository permissionRepository;
-    public ResponseEntity<RolesResponseDTO> createRoles(CreateRolesDTO rolesRequest){
+    
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+    public ResponseEntity<?> createRoles(CreateRolesDTO rolesRequest){
         Roles role = null;
         try {
             role = Roles.builder()
@@ -40,12 +43,39 @@ public class RolesService {
             .updated_At(LocalDateTime.now())
             .build();
             rolesRepository.save(role);
-            return new ResponseEntity<>(mapToRolesResponse(role), HttpStatus.CREATED);
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            ResponseDTO<Roles> response = buildResponse(role, HttpStatus.CREATED.value(), "Successfully roles created", true);
+            return new ResponseEntity<>(response, HttpStatus.CREATED);
+        }
+        catch (DataIntegrityViolationException e){
+            FieldErrorDTO fieldError = new FieldErrorDTO("Database", List.of("A role with same value exists"));
+            return buildErrorResponse(List.of(fieldError), "Duplicate Value Error", HttpStatus.CONFLICT);
+        }
+        catch (Exception e) {
+            FieldErrorDTO fieldError = new FieldErrorDTO("General", List.of("An unexpected error occurred."));
+            return buildErrorResponse(List.of(fieldError), "An error occurred in roles", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
+    private <T> ResponseDTO<T> buildResponse(T data, int statusCode, String message, boolean status) {
+        ResponseDTO<T> response = new ResponseDTO<>();
+        response.setStatusCode(statusCode);
+        response.setMessage(message);
+        response.setStatus(status);
+        response.setData(data);
+        return response;
+    }
+
+    @SuppressWarnings("rawtypes")
+    private ResponseEntity<ResponseDTO<List<FieldErrorDTO>>> buildErrorResponse(List<FieldErrorDTO> fieldErrors, String message, HttpStatus status) {
+        ResponseDTO<List<FieldErrorDTO>> response = new ResponseDTO<>();
+        response.setStatusCode(status.value());
+        response.setMessage(message);
+        response.setStatus(false);
+        response.setData(fieldErrors);
+
+        return new ResponseEntity<>(response, status);
+    }
+    
     public List<RolesResponseDTO> getAllRoles(){
         try {
             List<Roles> roles = rolesRepository.findAll();
@@ -59,6 +89,23 @@ public class RolesService {
        
     }
     
+    // public ResponseEntity<?> getAllRoles(){
+    //     try {
+    //         List<Roles> roles = rolesRepository.findAll();
+    //         if (roles.isEmpty()){
+    //            ResponseDTO<List<Roles>> response = buildResponse(Collections.emptyList(), HttpStatus.NOT_FOUND.value(), "No roles added yet", false);
+    //            return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+    //         }
+    //         ResponseDTO<List<RolesResponseDTO>> response = buildResponse( roles.stream().map(this::mapToRolesResponse).toList(), HttpStatus.ACCEPTED.value(), "List of currently active Roles", true);
+    //         return new ResponseEntity<>(response, HttpStatus.ACCEPTED);
+
+    //     } catch (Exception e) {
+    //         @SuppressWarnings({ "rawtypes", "unchecked" })
+    //         FieldErrorDTO fieldError = new FieldErrorDTO("General", List.of("An unexpected error occurred."));
+    //         return buildErrorResponse(List.of(fieldError), "An error occurred in roles", HttpStatus.INTERNAL_SERVER_ERROR);
+    //     }
+       
+    // }
     private RolesResponseDTO mapToRolesResponse(Roles role){
         return RolesResponseDTO.builder()
             .id(role.getId())

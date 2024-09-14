@@ -1,5 +1,5 @@
-package com.yunyan.project.authorization.service;
+// package com.yunyan.project.authorization.service;
 
-public class ErrorDetails {
+// public class ErrorDetails {
 
-}
+// }

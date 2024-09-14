@@ -37,12 +37,16 @@ public class RolesController {
     }
 
     @PostMapping
-    public ResponseEntity<RolesResponseDTO> createRoles(@RequestBody @Validated CreateRolesDTO rolesRequest){
-        ResponseEntity<RolesResponseDTO> response = rolesService.createRoles(rolesRequest);
+    public ResponseEntity<?> createRoles(@RequestBody @Validated CreateRolesDTO rolesRequest){
+        ResponseEntity<?> response = rolesService.createRoles(rolesRequest);
         return response;
     }
 
     @GetMapping
+    // public ResponseEntity<?> getAllRoles(){
+    //     ResponseEntity<?> response = rolesService.getAllRoles();
+    //     return response;
+    // }
     public List<RolesResponseDTO> getAllRoles(){
         return rolesService.getAllRoles();
     }
