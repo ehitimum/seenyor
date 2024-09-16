@@ -116,7 +116,7 @@ public class RolesService {
             roleToUpdate.setName(updaRolesRequest.getName());
             roleToUpdate.setUpdated_At(LocalDateTime.now());
             rolesRepository.save(roleToUpdate);
-            ResponseEntity<ResponseDTO<Roles>> response = buildResponse(roleToUpdate, HttpStatus.ACCEPTED.value(), "Successfully roles created", true);
+            ResponseEntity<ResponseDTO<Roles>> response = buildResponse(roleToUpdate, HttpStatus.ACCEPTED.value(), "Successfully Roles created", true);
             return new ResponseEntity<>(response, HttpStatus.ACCEPTED);
         } 
         catch (Exception e) {
