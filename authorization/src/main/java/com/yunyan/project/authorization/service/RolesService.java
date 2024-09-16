@@ -43,7 +43,7 @@ public class RolesService {
             .updated_At(LocalDateTime.now())
             .build();
             rolesRepository.save(role);
-            ResponseDTO<Roles> response = buildResponse(role, HttpStatus.CREATED.value(), "Successfully roles created", true);
+            ResponseEntity<ResponseDTO<Roles>> response = buildResponse(role, HttpStatus.CREATED.value(), "Successfully roles created", true);
             return new ResponseEntity<>(response, HttpStatus.CREATED);
         }
         catch (DataIntegrityViolationException e){
@@ -56,13 +56,13 @@ public class RolesService {
         }
     }
 
-    private <T> ResponseDTO<T> buildResponse(T data, int statusCode, String message, boolean status) {
+    private <T> ResponseEntity<ResponseDTO<T>> buildResponse(T data, int statusCode, String message, boolean status) {
         ResponseDTO<T> response = new ResponseDTO<>();
         response.setStatusCode(statusCode);
         response.setMessage(message);
         response.setStatus(status);
         response.setData(data);
-        return response;
+        return new ResponseEntity<>(response, HttpStatus.valueOf(statusCode));
     }
 
     @SuppressWarnings("rawtypes")
@@ -76,36 +76,19 @@ public class RolesService {
         return new ResponseEntity<>(response, status);
     }
     
-    public List<RolesResponseDTO> getAllRoles(){
+    public ResponseEntity<ResponseDTO<List<RolesResponseDTO>>> getAllRoles(){
         try {
             List<Roles> roles = rolesRepository.findAll();
-            if (roles.isEmpty()){
-                return Collections.emptyList();
+            if (roles.isEmpty()) {
+                return buildResponse(Collections.emptyList(), HttpStatus.NO_CONTENT.value(), "No roles found", false);
             }
-            return roles.stream().map(this::mapToRolesResponse).toList();
+            List<RolesResponseDTO> responseDTOList = roles.stream().map(this::mapToRolesResponse).toList();
+            return buildResponse(responseDTOList, HttpStatus.OK.value(), "Roles fetched successfully", true);
         } catch (Exception e) {
-            return Collections.emptyList();
+            return buildResponse(Collections.emptyList(), HttpStatus.INTERNAL_SERVER_ERROR.value(), "An error occurred while fetching roles", false);
         }
        
     }
-    
-    // public ResponseEntity<?> getAllRoles(){
-    //     try {
-    //         List<Roles> roles = rolesRepository.findAll();
-    //         if (roles.isEmpty()){
-    //            ResponseDTO<List<Roles>> response = buildResponse(Collections.emptyList(), HttpStatus.NOT_FOUND.value(), "No roles added yet", false);
-    //            return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
-    //         }
-    //         ResponseDTO<List<RolesResponseDTO>> response = buildResponse( roles.stream().map(this::mapToRolesResponse).toList(), HttpStatus.ACCEPTED.value(), "List of currently active Roles", true);
-    //         return new ResponseEntity<>(response, HttpStatus.ACCEPTED);
-
-    //     } catch (Exception e) {
-    //         @SuppressWarnings({ "rawtypes", "unchecked" })
-    //         FieldErrorDTO fieldError = new FieldErrorDTO("General", List.of("An unexpected error occurred."));
-    //         return buildErrorResponse(List.of(fieldError), "An error occurred in roles", HttpStatus.INTERNAL_SERVER_ERROR);
-    //     }
-       
-    // }
     private RolesResponseDTO mapToRolesResponse(Roles role){
         return RolesResponseDTO.builder()
             .id(role.getId())
@@ -117,36 +100,50 @@ public class RolesService {
             .build();
     }
 
-    public ResponseEntity<RolesResponseDTO> updateRole(int uuid, CreateRolesDTO updaRolesRequest) {
+    public ResponseEntity<?> updateRole(int uuid, CreateRolesDTO updaRolesRequest) {
         try {
             Optional<Roles> existingRole = rolesRepository.findById(uuid);
+            boolean isDuplicate = rolesRepository.existsByName(updaRolesRequest.getName());
             if (existingRole.isEmpty()) {
-                    return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+                @SuppressWarnings({ "unchecked", "rawtypes" })
+                FieldErrorDTO fieldError = new FieldErrorDTO("Not Found", List.of("The user with " + uuid + " is not found!"));
+                return buildErrorResponse(List.of(fieldError), "User Not Found", HttpStatus.NOT_FOUND);
+            }
+            if(isDuplicate){
+                throw new DataIntegrityViolationException("A role with the name '" + updaRolesRequest.getName() + "' already exists.");
             }
             Roles roleToUpdate = existingRole.get();
             roleToUpdate.setName(updaRolesRequest.getName());
             roleToUpdate.setUpdated_At(LocalDateTime.now());
             rolesRepository.save(roleToUpdate);
-            return new ResponseEntity<>(mapToRolesResponse(roleToUpdate), HttpStatus.ACCEPTED);
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            ResponseEntity<ResponseDTO<Roles>> response = buildResponse(roleToUpdate, HttpStatus.ACCEPTED.value(), "Successfully roles created", true);
+            return new ResponseEntity<>(response, HttpStatus.ACCEPTED);
+        } 
+        catch (Exception e) {
+            @SuppressWarnings({ "rawtypes", "unchecked" })
+            FieldErrorDTO fieldError = new FieldErrorDTO("General", List.of("An unexpected error occurred."));
+            return buildErrorResponse(List.of(fieldError), "An error occurred in roles", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
-    public ResponseEntity<ResponseDTO> soft_deleteRole(int uuid) {
+    public ResponseEntity<?> soft_deleteRole(int uuid) {
         try {
             Optional<Roles> targetRole = rolesRepository.findById(uuid);
             if (targetRole.isEmpty()) {
-                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+                @SuppressWarnings({ "unchecked", "rawtypes" })
+                FieldErrorDTO fieldError = new FieldErrorDTO("Not Found", List.of("The user with " + uuid + " is not found!"));
+                return buildErrorResponse(List.of(fieldError), "User Not Found", HttpStatus.NOT_FOUND);
             }
             Roles roleToRemove = targetRole.get();
             roleToRemove.set_deleted(true);
             roleToRemove.setStatus(false);
             rolesRepository.save(roleToRemove);
-            return new ResponseEntity<>((ResponseDTO.builder().message("Delete Successful").build()), HttpStatus.OK);        
-        }
+            ResponseEntity<ResponseDTO<Roles>> response = buildResponse(roleToRemove, HttpStatus.ACCEPTED.value(), "The role is delated successfully.", false);
+            return new ResponseEntity<>(response, HttpStatus.ACCEPTED);        }
         catch (Exception e) {
-            return new ResponseEntity<>((ResponseDTO.builder().message("Role with ID not found").build()),HttpStatus.BAD_REQUEST);
+            @SuppressWarnings({ "rawtypes", "unchecked" })
+            FieldErrorDTO fieldError = new FieldErrorDTO("General", List.of("An unexpected error occurred."));
+            return buildErrorResponse(List.of(fieldError), "An error occurred in roles", HttpStatus.INTERNAL_SERVER_ERROR);
         } 
     }
 

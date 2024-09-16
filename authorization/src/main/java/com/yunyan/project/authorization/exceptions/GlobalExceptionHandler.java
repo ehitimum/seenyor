@@ -36,7 +36,6 @@ public class GlobalExceptionHandler {
         FieldErrorDTO fieldError = new FieldErrorDTO("Database", List.of("A database error occurred, possibly due to duplicate data."));
         return buildValidationErrorResponse(List.of(fieldError), "Database constraint violation", HttpStatus.CONFLICT);
     }
-
     // Handle all other generic exceptions
     @SuppressWarnings({ "rawtypes", "unchecked" })
     @ExceptionHandler(Exception.class)

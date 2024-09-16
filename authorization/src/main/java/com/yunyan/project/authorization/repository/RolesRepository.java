@@ -15,6 +15,9 @@ public interface RolesRepository extends JpaRepository<Roles, Integer> {
     @Override
     @Query("select e from Roles e where e.is_deleted=false")
     List<Roles> findAll();
+    boolean existsByName(String name);
+    boolean existsByNameAndIdNot(String name, int uuid);
+
 
 
     

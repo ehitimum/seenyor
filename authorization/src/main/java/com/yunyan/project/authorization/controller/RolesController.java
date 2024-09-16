@@ -20,6 +20,7 @@ import com.yunyan.project.authorization.dto.commons.ResponseDTO;
 import com.yunyan.project.authorization.dto.roles.CreateRolesDTO;
 import com.yunyan.project.authorization.dto.roles.RolesResponseDTO;
 import com.yunyan.project.authorization.service.RolesService;
+
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -47,7 +48,7 @@ public class RolesController {
     //     ResponseEntity<?> response = rolesService.getAllRoles();
     //     return response;
     // }
-    public List<RolesResponseDTO> getAllRoles(){
+    public ResponseEntity<ResponseDTO<List<RolesResponseDTO>>> getAllRoles(){
         return rolesService.getAllRoles();
     }
     @GetMapping("/{uuid}")
@@ -56,14 +57,14 @@ public class RolesController {
     }
 
     @PutMapping("/{uuid}")
-    public ResponseEntity<RolesResponseDTO> updateRole(@PathVariable int uuid, @RequestBody @Validated CreateRolesDTO updateRolesRequest){
-        ResponseEntity<RolesResponseDTO> response = rolesService.updateRole(uuid, updateRolesRequest);
+    public ResponseEntity<?> updateRole(@PathVariable int uuid, @RequestBody @Validated CreateRolesDTO updateRolesRequest){
+        ResponseEntity<?> response = rolesService.updateRole(uuid, updateRolesRequest);
         return response;
     }
 
     @PutMapping("/delete/{uuid}")
-    public ResponseEntity<ResponseDTO> soft_deleteRole(@PathVariable int uuid){
-        ResponseEntity<ResponseDTO> response = rolesService.soft_deleteRole(uuid);
+    public ResponseEntity<?> soft_deleteRole(@PathVariable int uuid){
+        ResponseEntity<?> response = rolesService.soft_deleteRole(uuid);
         return response;
     }
     @PostMapping("/{uuid}")
