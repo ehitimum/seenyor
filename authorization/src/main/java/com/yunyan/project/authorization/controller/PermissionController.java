@@ -25,8 +25,10 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/permission")
 @RequiredArgsConstructor
 public class PermissionController {
+    
     @Autowired
     private final PermissionService service;
+    
     @PostMapping
     public ResponseEntity<?> createPermission(@RequestBody @Validated CreatePermissionDTO request){
         ResponseEntity<?> response = service.createPermission(request); 
@@ -46,6 +48,5 @@ public class PermissionController {
         ResponseEntity<?> response = service.deletePermission(uuid);
         return response;
     }
-
 
 }
