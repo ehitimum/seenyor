@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.yunyan.project.iot.dto.DeviceResponse;
 import com.yunyan.project.iot.dto.MqttEnableDTO;
+import com.yunyan.project.iot.dto.properties.DeviceDTO;
+import com.yunyan.project.iot.dto.properties.PropertiesDTO;
 import com.yunyan.project.iot.service.DeviceService;
 
 import lombok.RequiredArgsConstructor;
@@ -26,6 +28,10 @@ public class DeviceController {
     @GetMapping
     public DeviceResponse getDeviceInfo() throws NoSuchAlgorithmException {
         return service.getDeviceInfo();
+    }
+    @GetMapping("/properties")
+    public  PropertiesDTO getDeviceProp(@RequestBody @Validated DeviceDTO request) throws  NoSuchAlgorithmException{
+        return service.getDeviceProp(request);
     }
     
     @PostMapping
