@@ -25,6 +25,7 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/resource")
 @RequiredArgsConstructor
 public class ResourceController {
+    
     @Autowired
     private final ResourceService resourceService;
 
