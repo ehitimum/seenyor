@@ -26,8 +26,8 @@ public class DeviceService {
 
     @Autowired
     private final RestTemplate restTemplate;
-    private String appId = "ql763202409240025027482";
-    private String secret = "598cca46f3fd69f68d68e7c9ba4621b93c6a1ec8";
+    private String appId = "8";
+    private String secret = "8";
    
     public DeviceResponse getDeviceInfo() throws NoSuchAlgorithmException{
         String apiUrl = "https://qinglanst.com/prod-api/thirdparty/v2/getDeviceInfo";
