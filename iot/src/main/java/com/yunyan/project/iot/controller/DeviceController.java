@@ -30,8 +30,8 @@ public class DeviceController {
         return service.getDeviceInfo();
     }
     @GetMapping("/properties")
-    public  PropertiesDTO getDeviceProp(@RequestBody @Validated DeviceDTO request) throws  NoSuchAlgorithmException{
-        return service.getDeviceProp(request);
+    public  PropertiesDTO getDeviceProp() throws  NoSuchAlgorithmException{
+        return service.getDeviceProp();
     }
     
     @PostMapping

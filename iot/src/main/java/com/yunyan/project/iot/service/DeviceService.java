@@ -28,8 +28,8 @@ public class DeviceService {
 
     @Autowired
     private final RestTemplate restTemplate;
-    private String appId = "8";
-    private String secret = "8";
+    private String appId = "ql763202409240025027482";
+    private String secret = "173426b4a40a719822720489dd5b6ea03224c9d9";
    
     public DeviceResponse getDeviceInfo() throws NoSuchAlgorithmException{
         String apiUrl = "https://qinglanst.com/prod-api/thirdparty/v2/getDeviceInfo";
@@ -96,18 +96,18 @@ public class DeviceService {
     
     }
 
-    public PropertiesDTO getDeviceProp(DeviceDTO request) throws NoSuchAlgorithmException {
-        String apiUrl = "https://qinglanst.com/prod-api/thirdparty/v2/deviceProp";
+    public PropertiesDTO getDeviceProp() throws NoSuchAlgorithmException {
+        String apiUrl = "https://qinglanst.com/prod-api/thirdparty/v2/deviceProp?uid=25A859B81A6F";
         String timestamp = String.valueOf(System.currentTimeMillis() / 1000);
-        Map<String, String> params = new TreeMap<>();
+        // Map<String, String> params = new TreeMap<>();
     
-        params.put("uid", request.getUid());
+        // params.put("uid", request.getUid());
 
-         String concatenatedParams = params.entrySet().stream()
-            .map(entry -> entry.getKey() + "=" + entry.getValue())
-            .collect(Collectors.joining("#"));
+        //  String concatenatedParams = params.entrySet().stream()
+        //     .map(entry -> entry.getKey() + "=" + entry.getValue())
+        //     .collect(Collectors.joining("#"));
     
-        String concatenatedString = secret + "#" + timestamp + "#" + concatenatedParams + "#";
+        String concatenatedString = secret + "#" + timestamp + "#" + "uid=25A859B81A6F#"; //+ concatenatedParams + "#";
         System.out.println(concatenatedString);
         String signature = Sha1Util.generateSha1(concatenatedString);
         System.out.println(signature);
