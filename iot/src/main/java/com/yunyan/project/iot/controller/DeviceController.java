@@ -11,8 +11,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.yunyan.project.iot.dto.DeviceResponse;
-import com.yunyan.project.iot.dto.MqttEnableDTO;
-import com.yunyan.project.iot.dto.properties.DeviceDTO;
+import com.yunyan.project.iot.dto.bindDevice.bindDTO;
+import com.yunyan.project.iot.dto.mqttDisable.MqttDisableDTO;
+import com.yunyan.project.iot.dto.mqttDisable.MqttDisableResponse;
+import com.yunyan.project.iot.dto.mqttEnable.MqttEnableDTO;
 import com.yunyan.project.iot.dto.properties.PropertiesDTO;
 import com.yunyan.project.iot.service.DeviceService;
 
@@ -33,9 +35,25 @@ public class DeviceController {
     public  PropertiesDTO getDeviceProp() throws  NoSuchAlgorithmException{
         return service.getDeviceProp();
     }
+
+    @PostMapping("/bind")
+    public DeviceResponse bindDevice(@RequestBody @Validated bindDTO request) throws NoSuchAlgorithmException{
+        return service.bindDevice(request);
+    }
+    @PostMapping("/unbind")
+    public DeviceResponse unbindDevice(@RequestBody @Validated bindDTO request) throws NoSuchAlgorithmException{
+        return service.unbindDevice(request);
+    }
     
-    @PostMapping
+    @PostMapping("/Mqtt/Start")
     public DeviceResponse startMqtt(@RequestBody @Validated MqttEnableDTO request) throws NoSuchAlgorithmException{
         return service.enableMqttPush(request);
     }
+    @PostMapping("/Mqtt/Stop")
+    public MqttDisableResponse stopMqtt(@RequestBody @Validated MqttDisableDTO request) throws  NoSuchAlgorithmException{
+        return service.disableMqtt(request);
+    }
+
+
+
 }
