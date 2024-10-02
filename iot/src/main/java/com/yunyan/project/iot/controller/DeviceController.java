@@ -16,6 +16,8 @@ import com.yunyan.project.iot.dto.mqttDisable.MqttDisableDTO;
 import com.yunyan.project.iot.dto.mqttDisable.MqttDisableResponse;
 import com.yunyan.project.iot.dto.mqttEnable.MqttEnableDTO;
 import com.yunyan.project.iot.dto.properties.PropertiesDTO;
+import com.yunyan.project.iot.dto.subscribeAffair.SubscribeResponse;
+import com.yunyan.project.iot.dto.subscribeAffair.subscribeDTO;
 import com.yunyan.project.iot.service.DeviceService;
 
 import lombok.RequiredArgsConstructor;
@@ -43,6 +45,10 @@ public class DeviceController {
     @PostMapping("/unbind")
     public DeviceResponse unbindDevice(@RequestBody @Validated bindDTO request) throws NoSuchAlgorithmException{
         return service.unbindDevice(request);
+    }
+    @PostMapping("/subcribe")
+    public SubscribeResponse subscribeAffair(@RequestBody @Validated subscribeDTO request) throws NoSuchAlgorithmException{
+        return service.subscribeAffair(request);
     }
     
     @PostMapping("/Mqtt/Start")
