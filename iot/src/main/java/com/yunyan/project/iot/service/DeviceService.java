@@ -23,6 +23,8 @@ import com.yunyan.project.iot.dto.mqttDisable.MqttDisableDTO;
 import com.yunyan.project.iot.dto.mqttDisable.MqttDisableResponse;
 import com.yunyan.project.iot.dto.mqttEnable.MqttEnableDTO;
 import com.yunyan.project.iot.dto.properties.PropertiesDTO;
+import com.yunyan.project.iot.dto.subscribeAffair.SubscribeResponse;
+import com.yunyan.project.iot.dto.subscribeAffair.subscribeDTO;
 import com.yunyan.project.iot.util.Sha1Util;
 
 import lombok.RequiredArgsConstructor;
@@ -265,6 +267,52 @@ public class DeviceService {
                 HttpMethod.POST,
                 entity,
                 DeviceResponse.class
+        );
+        
+        return response.getBody();
+    }
+
+    public SubscribeResponse subscribeAffair(subscribeDTO request) throws NoSuchAlgorithmException {
+        String apiUrl = "https://qinglanst.com/prod-api/thirdparty/v2/unbindDevice";
+        String timestamp = String.valueOf(System.currentTimeMillis()/ 1000);
+        
+        Map<String, Object> body = new HashMap<>();
+        body.put("event", request.getEvent());
+        body.put("humanUrl", request.getHumanUrl());
+        body.put("eventUrl", request.getEventUrl());
+
+        Map<String, String> params = new TreeMap<>();
+        params.put("event", String.join("=", request.getEvent().stream()
+                                        .map(String::valueOf)
+                                        .toArray(String[]::new )));
+        params.put("humanUrl", request.getHumanUrl());
+        params.put("eventUrl", request.getEventUrl());
+
+        String concatenatedParams = params.entrySet().stream()
+                                        .map(entry -> entry.getKey() + "=" + entry.getValue())
+                                        .collect(Collectors.joining("#"));
+
+        String concatenatedString = secret + "#" + timestamp + "#" + concatenatedParams + "#";
+        System.out.println(concatenatedString);
+        String signature = Sha1Util.generateSha1(concatenatedString);
+        System.out.println(signature);
+
+       
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("appid", appId);
+        headers.add("timestamp", timestamp);
+        headers.add("signature", signature);
+        headers.setContentType(MediaType.APPLICATION_JSON); 
+
+      
+        HttpEntity<Map<String, Object>> entity = new HttpEntity<>(body, headers);
+
+      
+        ResponseEntity<SubscribeResponse> response = restTemplate.exchange(
+                apiUrl,
+                HttpMethod.POST,
+                entity,
+                SubscribeResponse.class
         );
         
         return response.getBody();
