@@ -15,7 +15,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.util.UriComponentsBuilder;
 
 import com.yunyan.project.iot.dto.DeviceResponse;
 import com.yunyan.project.iot.dto.bindDevice.bindDTO;
@@ -36,25 +35,40 @@ public class DeviceService {
     @Autowired
     private final RestTemplate restTemplate;
     private String appId = "ql763202409240025027482";
-    private String secret = "173426b4a40a719822720489dd5b6ea03224c9d9";
+    private String secret = "ca95b800a8b56b14c755a80a88e84eaf45e8da77";
    
-    public DeviceResponse getDeviceInfo() throws NoSuchAlgorithmException{
+    public <T> DeviceResponse getDeviceInfo() throws NoSuchAlgorithmException{
         String apiUrl = "https://qinglanst.com/prod-api/thirdparty/v2/getDeviceInfo";
         String timestamp = String.valueOf(System.currentTimeMillis() / 1000);
         String concatenatedString = secret + "#" + timestamp + "#";
         String signature = Sha1Util.generateSha1(concatenatedString);
-        System.out.println(signature);
+        HttpEntity<?> entity = new HttpEntity<>(headerBuilder(appId, timestamp, signature));
+        return httpRequestBuilder(entity, apiUrl, DeviceResponse.class, HttpMethod.GET);
+    }
+
+    private HttpHeaders headerBuilder(String appId, String timestamp, String signature){
         HttpHeaders headers = new HttpHeaders();
         headers.add("appid", appId);
         headers.add("timestamp", timestamp);
         headers.add("signature", signature);
-        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(apiUrl);
-        HttpEntity<?> entity = new HttpEntity<>(headers);
-        ResponseEntity<DeviceResponse> response = restTemplate.exchange(
-                builder.toUriString(),
-                HttpMethod.GET,
+        return headers;
+    }
+
+    private HttpHeaders headerBuilder(String appId, String timestamp, String signature, MediaType type){
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("appid", appId);
+        headers.add("timestamp", timestamp);
+        headers.add("signature", signature);
+        headers.setContentType(type);
+        return headers;
+    }
+
+    private <T> T httpRequestBuilder(HttpEntity<?> entity, String apiUrl, Class<T> responseType, HttpMethod method){
+        ResponseEntity<T> response = restTemplate.exchange(
+                apiUrl,
+                method,
                 entity,
-                DeviceResponse.class
+                responseType
         );
         return response.getBody();
     }
@@ -104,56 +118,19 @@ public class DeviceService {
         System.out.println(concatenatedString);
         String signature = Sha1Util.generateSha1(concatenatedString);
         System.out.println(signature);
-
-        // Create headers and add Content-Type
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("appid", appId);
-        headers.add("timestamp", timestamp);
-        headers.add("signature", signature);
-        headers.setContentType(MediaType.APPLICATION_JSON);  // Set Content-Type to application/json
-
-        // Create HttpEntity with body and headers
-        HttpEntity<Map<String, Object>> entity = new HttpEntity<>(body, headers);
-
-        // Make POST request
-        ResponseEntity<DeviceResponse> response = restTemplate.exchange(
-                apiUrl,
-                HttpMethod.POST,
-                entity,
-                DeviceResponse.class
-        );
-        
-        return response.getBody();
+        HttpEntity<Map<String, Object>> entity = new HttpEntity<>(body, headerBuilder(appId, timestamp, signature, MediaType.APPLICATION_JSON));
+        return httpRequestBuilder(entity, apiUrl, DeviceResponse.class, HttpMethod.POST);
 }
 
     public PropertiesDTO getDeviceProp() throws NoSuchAlgorithmException {
         String apiUrl = "https://qinglanst.com/prod-api/thirdparty/v2/deviceProp?uid=25A859B81A6F";
         String timestamp = String.valueOf(System.currentTimeMillis() / 1000);
-        // Map<String, String> params = new TreeMap<>();
-    
-        // params.put("uid", request.getUid());
-
-        //  String concatenatedParams = params.entrySet().stream()
-        //     .map(entry -> entry.getKey() + "=" + entry.getValue())
-        //     .collect(Collectors.joining("#"));
-    
         String concatenatedString = secret + "#" + timestamp + "#" + "uid=25A859B81A6F#"; //+ concatenatedParams + "#";
         System.out.println(concatenatedString);
         String signature = Sha1Util.generateSha1(concatenatedString);
         System.out.println(signature);
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("appid", appId);
-        headers.add("timestamp", timestamp);
-        headers.add("signature", signature);
-        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(apiUrl);
-        HttpEntity<?> entity = new HttpEntity<>(headers);
-        ResponseEntity<PropertiesDTO> response = restTemplate.exchange(
-                builder.toUriString(),
-                HttpMethod.GET,
-                entity,
-                PropertiesDTO.class
-        );
-        return response.getBody();
+        HttpEntity<?> entity = new HttpEntity<>(headerBuilder(appId, timestamp, signature));
+        return httpRequestBuilder(entity, apiUrl, PropertiesDTO.class, HttpMethod.GET);
     }
 
     public MqttDisableResponse disableMqtt(MqttDisableDTO request) throws NoSuchAlgorithmException {
@@ -177,23 +154,8 @@ public class DeviceService {
         System.out.println(concatenatedString);
         String signature = Sha1Util.generateSha1(concatenatedString);
         System.out.println(signature);
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("appid", appId);
-        headers.add("timestamp", timestamp);
-        headers.add("signature", signature);
-        headers.setContentType(MediaType.APPLICATION_JSON);  
-
-        HttpEntity<Map<String, Object>> entity = new HttpEntity<>(body, headers);
-
-        ResponseEntity<MqttDisableResponse> response = restTemplate.exchange(
-                apiUrl,
-                HttpMethod.POST,
-                entity,
-                MqttDisableResponse.class
-        );
-        
-        return response.getBody();
+        HttpEntity<Map<String, Object>> entity = new HttpEntity<>(body, headerBuilder(appId, timestamp, signature, MediaType.APPLICATION_JSON));
+        return httpRequestBuilder(entity, apiUrl, MqttDisableResponse.class, HttpMethod.POST);
     }
 
     public DeviceResponse bindDevice(bindDTO request) throws NoSuchAlgorithmException {
@@ -212,26 +174,8 @@ public class DeviceService {
         System.out.println(concatenatedString);
         String signature = Sha1Util.generateSha1(concatenatedString);
         System.out.println(signature);
-
-       
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("appid", appId);
-        headers.add("timestamp", timestamp);
-        headers.add("signature", signature);
-        headers.setContentType(MediaType.APPLICATION_JSON); 
-
-      
-        HttpEntity<Map<String, Object>> entity = new HttpEntity<>(body, headers);
-
-      
-        ResponseEntity<DeviceResponse> response = restTemplate.exchange(
-                apiUrl,
-                HttpMethod.POST,
-                entity,
-                DeviceResponse.class
-        );
-        
-        return response.getBody();
+        HttpEntity<Map<String, Object>> entity = new HttpEntity<>(body, headerBuilder(appId, timestamp, signature, MediaType.APPLICATION_JSON));
+        return httpRequestBuilder(entity, apiUrl, DeviceResponse.class, HttpMethod.POST);
     }
 
     public DeviceResponse unbindDevice(bindDTO request) throws NoSuchAlgorithmException {
@@ -250,26 +194,8 @@ public class DeviceService {
         System.out.println(concatenatedString);
         String signature = Sha1Util.generateSha1(concatenatedString);
         System.out.println(signature);
-
-       
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("appid", appId);
-        headers.add("timestamp", timestamp);
-        headers.add("signature", signature);
-        headers.setContentType(MediaType.APPLICATION_JSON); 
-
-      
-        HttpEntity<Map<String, Object>> entity = new HttpEntity<>(body, headers);
-
-      
-        ResponseEntity<DeviceResponse> response = restTemplate.exchange(
-                apiUrl,
-                HttpMethod.POST,
-                entity,
-                DeviceResponse.class
-        );
-        
-        return response.getBody();
+        HttpEntity<Map<String, Object>> entity = new HttpEntity<>(body, headerBuilder(appId, timestamp, signature, MediaType.APPLICATION_JSON));
+        return httpRequestBuilder(entity, apiUrl, DeviceResponse.class, HttpMethod.POST);
     }
 
     public SubscribeResponse subscribeAffair(subscribeDTO request) throws NoSuchAlgorithmException {
@@ -296,25 +222,7 @@ public class DeviceService {
         System.out.println(concatenatedString);
         String signature = Sha1Util.generateSha1(concatenatedString);
         System.out.println(signature);
-
-       
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("appid", appId);
-        headers.add("timestamp", timestamp);
-        headers.add("signature", signature);
-        headers.setContentType(MediaType.APPLICATION_JSON); 
-
-      
-        HttpEntity<Map<String, Object>> entity = new HttpEntity<>(body, headers);
-
-      
-        ResponseEntity<SubscribeResponse> response = restTemplate.exchange(
-                apiUrl,
-                HttpMethod.POST,
-                entity,
-                SubscribeResponse.class
-        );
-        
-        return response.getBody();
+        HttpEntity<Map<String, Object>> entity = new HttpEntity<>(body, headerBuilder(appId, timestamp, signature, MediaType.APPLICATION_JSON));        
+        return httpRequestBuilder(entity, apiUrl, SubscribeResponse.class, HttpMethod.POST);
     }
 }
