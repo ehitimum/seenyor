@@ -21,6 +21,7 @@ import com.yunyan.project.iot.dto.bindDevice.bindDTO;
 import com.yunyan.project.iot.dto.mqttDisable.MqttDisableDTO;
 import com.yunyan.project.iot.dto.mqttDisable.MqttDisableResponse;
 import com.yunyan.project.iot.dto.mqttEnable.MqttEnableDTO;
+import com.yunyan.project.iot.dto.properties.DevicePropertiesDTO;
 import com.yunyan.project.iot.dto.properties.PropertiesDTO;
 import com.yunyan.project.iot.dto.subscribeAffair.SubscribeResponse;
 import com.yunyan.project.iot.dto.subscribeAffair.subscribeDTO;
@@ -35,7 +36,7 @@ public class DeviceService {
     @Autowired
     private final RestTemplate restTemplate;
     private String appId = "ql763202409240025027482";
-    private String secret = "ca95b800a8b56b14c755a80a88e84eaf45e8da77";
+    private String secret = "2d1a5d9019acf488260d224e63da0230d583ce8d";
    
     public <T> DeviceResponse getDeviceInfo() throws NoSuchAlgorithmException{
         String apiUrl = "https://qinglanst.com/prod-api/thirdparty/v2/getDeviceInfo";
@@ -224,5 +225,47 @@ public class DeviceService {
         System.out.println(signature);
         HttpEntity<Map<String, Object>> entity = new HttpEntity<>(body, headerBuilder(appId, timestamp, signature, MediaType.APPLICATION_JSON));        
         return httpRequestBuilder(entity, apiUrl, SubscribeResponse.class, HttpMethod.POST);
+    }
+
+    public PropertiesDTO setDeviceProp(DevicePropertiesDTO request) throws NoSuchAlgorithmException {
+        String apiUrl = "https://qinglanst.com/prod-api/thirdparty/v2/prop";
+        String timestamp = String.valueOf(System.currentTimeMillis()/ 1000);
+        
+        Map<String, Object> body = new HashMap<>();
+        body.put("uid", request.getUid());
+        body.put("scene", request.getScene());
+        body.put("installType", request.getInstallType());
+        body.put("height", request.getHeight());
+        body.put("susFallDuration", request.getSusFallDuration());
+        body.put("leaveAlarmSwitch", request.getLeaveAlarmSwitch());
+        body.put("leaveDetectionTime", request.getLeaveDetectionTime());
+        body.put("leaveDetectionRange", request.getLeaveDetectionRange());
+        body.put("longAwaySwitch", request.getLongAwaySwitch());
+        body.put("detentionAlarmSwitch", request.getDetentionAlarmSwitch());
+        body.put("entryDetectionTime", request.getEntryDetectionTime());
+
+        Map<String, String> params = new TreeMap<>();
+        params.put("uid", request.getUid());
+        params.put("scene", request.getScene());
+        params.put("installType", request.getInstallType());
+        params.put("height", request.getHeight());
+        params.put("susFallDuration", request.getSusFallDuration());
+        params.put("leaveAlarmSwitch", request.getLeaveAlarmSwitch());
+        params.put("leaveDetectionTime", request.getLeaveDetectionTime());
+        params.put("leaveDetectionRange", request.getLeaveDetectionRange());
+        params.put("longAwaySwitch", request.getLongAwaySwitch());
+        params.put("detentionAlarmSwitch", request.getDetentionAlarmSwitch());
+        params.put("entryDetectionTime", request.getEntryDetectionTime());
+
+        String concatenatedParams = params.entrySet().stream()
+                                        .map(entry -> entry.getKey() + "=" + entry.getValue())
+                                        .collect(Collectors.joining("#"));
+
+        String concatenatedString = secret + "#" + timestamp + "#" + concatenatedParams + "#";
+        System.out.println(concatenatedString);
+        String signature = Sha1Util.generateSha1(concatenatedString);
+        System.out.println(signature);
+        HttpEntity<Map<String, Object>> entity = new HttpEntity<>(body, headerBuilder(appId, timestamp, signature, MediaType.APPLICATION_JSON));        
+        return httpRequestBuilder(entity, apiUrl, PropertiesDTO.class, HttpMethod.POST);
     }
 }

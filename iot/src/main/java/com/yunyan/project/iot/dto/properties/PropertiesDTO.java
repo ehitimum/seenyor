@@ -1,7 +1,5 @@
 package com.yunyan.project.iot.dto.properties;
 
-import java.util.List;
-
 import com.yunyan.project.iot.model.DeviceProperties;
 
 import lombok.AllArgsConstructor;
@@ -16,5 +14,5 @@ import lombok.NoArgsConstructor;
 public class PropertiesDTO {
     private String code;
     private String msg;
-    private List<DeviceProperties> data;
+    private DeviceProperties data;
 }
