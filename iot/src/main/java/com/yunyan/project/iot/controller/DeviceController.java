@@ -15,6 +15,7 @@ import com.yunyan.project.iot.dto.bindDevice.bindDTO;
 import com.yunyan.project.iot.dto.mqttDisable.MqttDisableDTO;
 import com.yunyan.project.iot.dto.mqttDisable.MqttDisableResponse;
 import com.yunyan.project.iot.dto.mqttEnable.MqttEnableDTO;
+import com.yunyan.project.iot.dto.properties.DevicePropertiesDTO;
 import com.yunyan.project.iot.dto.properties.PropertiesDTO;
 import com.yunyan.project.iot.dto.subscribeAffair.SubscribeResponse;
 import com.yunyan.project.iot.dto.subscribeAffair.subscribeDTO;
@@ -59,7 +60,12 @@ public class DeviceController {
     public MqttDisableResponse stopMqtt(@RequestBody @Validated MqttDisableDTO request) throws  NoSuchAlgorithmException{
         return service.disableMqtt(request);
     }
+    @PostMapping("/properties")
+    public PropertiesDTO setDeviceProp(@RequestBody @Validated DevicePropertiesDTO request) throws  NoSuchAlgorithmException{
+        return service.setDeviceProp(request);
+    }
 
+   
 
 
 }
