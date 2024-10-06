@@ -12,6 +12,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.yunyan.project.iot.dto.DeviceResponse;
 import com.yunyan.project.iot.dto.bindDevice.bindDTO;
+import com.yunyan.project.iot.dto.boundary.BoundariesDTO;
+import com.yunyan.project.iot.dto.boundary.DeviceAreaDTO;
+import com.yunyan.project.iot.dto.breathheart.BreathHeartParamDTO;
+import com.yunyan.project.iot.dto.breathheart.breathheartResponse;
 import com.yunyan.project.iot.dto.mqttDisable.MqttDisableDTO;
 import com.yunyan.project.iot.dto.mqttDisable.MqttDisableResponse;
 import com.yunyan.project.iot.dto.mqttEnable.MqttEnableDTO;
@@ -64,8 +68,18 @@ public class DeviceController {
     public PropertiesDTO setDeviceProp(@RequestBody @Validated DevicePropertiesDTO request) throws  NoSuchAlgorithmException{
         return service.setDeviceProp(request);
     }
-
-   
+    @PostMapping("/boundaries")
+    public DeviceResponse setDeviceBoundary(@RequestBody @Validated BoundariesDTO request) throws  NoSuchAlgorithmException{
+        return service.setDeviceBoundary(request);
+    }
+    @PostMapping("/area")
+    public DeviceResponse setDeviceArea(@RequestBody @Validated DeviceAreaDTO request) throws  NoSuchAlgorithmException{
+        return service.setDeviceArea(request);
+    }
+    @PostMapping("/breath-heart")
+    public breathheartResponse setBreathHeartParam(@RequestBody @Validated BreathHeartParamDTO request){
+        return service.setBreathHeartParam(request);
+    }
 
 
 }
