@@ -18,6 +18,10 @@ import org.springframework.web.client.RestTemplate;
 
 import com.yunyan.project.iot.dto.DeviceResponse;
 import com.yunyan.project.iot.dto.bindDevice.bindDTO;
+import com.yunyan.project.iot.dto.boundary.BoundariesDTO;
+import com.yunyan.project.iot.dto.boundary.DeviceAreaDTO;
+import com.yunyan.project.iot.dto.breathheart.BreathHeartParamDTO;
+import com.yunyan.project.iot.dto.breathheart.breathheartResponse;
 import com.yunyan.project.iot.dto.mqttDisable.MqttDisableDTO;
 import com.yunyan.project.iot.dto.mqttDisable.MqttDisableResponse;
 import com.yunyan.project.iot.dto.mqttEnable.MqttEnableDTO;
@@ -268,4 +272,74 @@ public class DeviceService {
         HttpEntity<Map<String, Object>> entity = new HttpEntity<>(body, headerBuilder(appId, timestamp, signature, MediaType.APPLICATION_JSON));        
         return httpRequestBuilder(entity, apiUrl, PropertiesDTO.class, HttpMethod.POST);
     }
+
+    public DeviceResponse setDeviceBoundary(BoundariesDTO request) throws NoSuchAlgorithmException {
+        String apiUrl = "https://qinglanst.com/prod-api/thirdparty/v2/border";
+        String timestamp = String.valueOf(System.currentTimeMillis()/ 1000);
+        
+        Map<String, Object> body = new HashMap<>();
+        body.put("uid", request.getUid());
+        body.put("upLeft", request.getUpLeft());
+        body.put("lowLeft", request.getLowLeft());
+        body.put("upRight", request.getUpRight());
+        body.put("lowRight", request.getLowRight());
+
+        Map<String, Object> params = new HashMap<>();
+        params.put("uid", request.getUid());
+        params.put("upLeft", request.getUpLeft());
+        params.put("lowLeft", request.getLowLeft());
+        params.put("upRight", request.getUpRight());
+        params.put("lowRight", request.getLowRight());
+
+        String concatenatedParams = params.entrySet().stream()
+                                        .map(entry -> entry.getKey() + "=" + entry.getValue())
+                                        .collect(Collectors.joining("#"));
+
+        String concatenatedString = secret + "#" + timestamp + "#" + concatenatedParams + "#";
+        System.out.println(concatenatedString);
+        String signature = Sha1Util.generateSha1(concatenatedString);
+        System.out.println(signature);
+        HttpEntity<Map<String, Object>> entity = new HttpEntity<>(body, headerBuilder(appId, timestamp, signature, MediaType.APPLICATION_JSON));        
+        return httpRequestBuilder(entity, apiUrl, DeviceResponse.class, HttpMethod.POST);
+    }
+
+    public DeviceResponse setDeviceArea(DeviceAreaDTO request) throws NoSuchAlgorithmException {
+        String apiUrl = "https://qinglanst.com/prod-api/thirdparty/v2/coords";
+        String timestamp = String.valueOf(System.currentTimeMillis()/ 1000);
+        
+        Map<String, Object> body = new HashMap<>();
+        body.put("uid", request.getUid());
+        body.put("coordKey", request.getCoordKey());
+        body.put("type", request.getType());
+        body.put("upLeft", request.getUpLeft());
+        body.put("lowLeft", request.getLowLeft());
+        body.put("upRight", request.getUpRight());
+        body.put("lowRight", request.getLowRight());
+
+        Map<String, Object> params = new HashMap<>();
+        params.put("uid", request.getUid());
+        params.put("coordKey", request.getCoordKey());
+        params.put("type", request.getType());
+        params.put("upLeft", request.getUpLeft());
+        params.put("lowLeft", request.getLowLeft());
+        params.put("upRight", request.getUpRight());
+        params.put("lowRight", request.getLowRight());
+
+        String concatenatedParams = params.entrySet().stream()
+                                        .map(entry -> entry.getKey() + "=" + entry.getValue())
+                                        .collect(Collectors.joining("#"));
+
+        String concatenatedString = secret + "#" + timestamp + "#" + concatenatedParams + "#";
+        System.out.println(concatenatedString);
+        String signature = Sha1Util.generateSha1(concatenatedString);
+        System.out.println(signature);
+        HttpEntity<Map<String, Object>> entity = new HttpEntity<>(body, headerBuilder(appId, timestamp, signature, MediaType.APPLICATION_JSON));        
+        return httpRequestBuilder(entity, apiUrl, DeviceResponse.class, HttpMethod.POST);
+    }
+
+    public breathheartResponse setBreathHeartParam(BreathHeartParamDTO request) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+
 }
