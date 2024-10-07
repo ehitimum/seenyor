@@ -17,6 +17,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import com.yunyan.project.iot.dto.DeviceResponse;
+import com.yunyan.project.iot.dto.MobileCardResponse;
+import com.yunyan.project.iot.dto.MobileResponse;
+import com.yunyan.project.iot.dto.WhiteResponse;
 import com.yunyan.project.iot.dto.bindDevice.bindDTO;
 import com.yunyan.project.iot.dto.boundary.BoundariesDTO;
 import com.yunyan.project.iot.dto.boundary.DeviceAreaDTO;
@@ -337,9 +340,76 @@ public class DeviceService {
         return httpRequestBuilder(entity, apiUrl, DeviceResponse.class, HttpMethod.POST);
     }
 
-    public breathheartResponse setBreathHeartParam(BreathHeartParamDTO request) {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public breathheartResponse setBreathHeartParam(BreathHeartParamDTO request) throws NoSuchAlgorithmException {
+        String apiUrl = "https://qinglanst.com/prod-api/thirdparty/v2/coords";
+        String timestamp = String.valueOf(System.currentTimeMillis()/ 1000);
+        
+        Map<String, Object> body = new HashMap<>();
+        body.put("uid", request.getUid());
+        body.put("upperBreathe", request.getUpperBreathe());
+        body.put("upperHeartRate", request.getUpperHeartRate());
+        body.put("lowerBreathe", request.getLowerBreathe());
+        body.put("lowerHeartRate", request.getLowerHeartRate());
+        body.put("intensiveCare", request.getIntensiveCare());
+        body.put("suddenDuration", request.getSuddenDuration());
+        body.put("sensitivity", request.getSensitivity());
+
+        Map<String, Object> params = new HashMap<>();
+        params.put("uid", request.getUid());
+        params.put("upperBreathe", request.getUpperBreathe());
+        params.put("upperHeartRate", request.getUpperHeartRate());
+        params.put("lowerBreathe", request.getLowerBreathe());
+        params.put("lowerHeartRate", request.getLowerHeartRate());
+        params.put("intensiveCare", request.getIntensiveCare());
+        params.put("suddenDuration", request.getSuddenDuration());
+        params.put("sensitivity", request.getSensitivity());
+
+        String concatenatedParams = params.entrySet().stream()
+                                        .map(entry -> entry.getKey() + "=" + entry.getValue())
+                                        .collect(Collectors.joining("#"));
+
+        String concatenatedString = secret + "#" + timestamp + "#" + concatenatedParams + "#";
+        System.out.println(concatenatedString);
+        String signature = Sha1Util.generateSha1(concatenatedString);
+        System.out.println(signature);
+        HttpEntity<Map<String, Object>> entity = new HttpEntity<>(body, headerBuilder(appId, timestamp, signature, MediaType.APPLICATION_JSON));        
+        return httpRequestBuilder(entity, apiUrl, breathheartResponse.class, HttpMethod.POST);
     }
+
+    public MobileResponse getPhoneNumber() throws NoSuchAlgorithmException {
+        String apiUrl = "https://qinglanst.com/prod-api/thirdparty/v2/getCallee?uid=25A859B81A6F";
+        String timestamp = String.valueOf(System.currentTimeMillis() / 1000);
+        String concatenatedString = secret + "#" + timestamp + "#" + "uid=25A859B81A6F#";
+        System.out.println(concatenatedString);
+        String signature = Sha1Util.generateSha1(concatenatedString);
+        System.out.println(signature);
+        HttpEntity<?> entity = new HttpEntity<>(headerBuilder(appId, timestamp, signature));
+        return httpRequestBuilder(entity, apiUrl, MobileResponse.class, HttpMethod.GET);
+    }
+    
+    public MobileCardResponse getCardInfo() throws NoSuchAlgorithmException {
+        String apiUrl = "https://qinglanst.com/prod-api/thirdparty/v2/cardInfo?uid=25A859B81A6F";
+        String timestamp = String.valueOf(System.currentTimeMillis() / 1000);
+        String concatenatedString = secret + "#" + timestamp + "#" + "uid=25A859B81A6F#";
+        System.out.println(concatenatedString);
+        String signature = Sha1Util.generateSha1(concatenatedString);
+        System.out.println(signature);
+        HttpEntity<?> entity = new HttpEntity<>(headerBuilder(appId, timestamp, signature));
+        return httpRequestBuilder(entity, apiUrl, MobileCardResponse.class, HttpMethod.GET);
+    }
+
+    public WhiteResponse getWhitelist() throws NoSuchAlgorithmException {
+        String apiUrl = "https://qinglanst.com/prod-api/thirdparty/v2/whiteList?uid=25A859B81A6F";
+        String timestamp = String.valueOf(System.currentTimeMillis() / 1000);
+        String concatenatedString = secret + "#" + timestamp + "#" + "uid=25A859B81A6F#";
+        System.out.println(concatenatedString);
+        String signature = Sha1Util.generateSha1(concatenatedString);
+        System.out.println(signature);
+        HttpEntity<?> entity = new HttpEntity<>(headerBuilder(appId, timestamp, signature));
+        return httpRequestBuilder(entity, apiUrl, WhiteResponse.class, HttpMethod.GET);
+    }
+
+
 
 
 }
