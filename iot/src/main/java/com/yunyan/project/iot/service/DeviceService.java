@@ -32,6 +32,8 @@ import com.yunyan.project.iot.dto.properties.DevicePropertiesDTO;
 import com.yunyan.project.iot.dto.properties.PropertiesDTO;
 import com.yunyan.project.iot.dto.subscribeAffair.SubscribeResponse;
 import com.yunyan.project.iot.dto.subscribeAffair.subscribeDTO;
+import com.yunyan.project.iot.dto.token.LoginDTO;
+import com.yunyan.project.iot.dto.token.LoginResponse;
 import com.yunyan.project.iot.util.Sha1Util;
 
 import lombok.RequiredArgsConstructor;
@@ -407,6 +409,34 @@ public class DeviceService {
         System.out.println(signature);
         HttpEntity<?> entity = new HttpEntity<>(headerBuilder(appId, timestamp, signature));
         return httpRequestBuilder(entity, apiUrl, WhiteResponse.class, HttpMethod.GET);
+    }
+
+    public LoginResponse getToken(LoginDTO request) throws NoSuchAlgorithmException {
+        String apiUrl = "https://qinglanst.com/prod-api/thirdparty/v2/unbindDevice";
+        String timestamp = String.valueOf(System.currentTimeMillis()/ 1000);
+        
+        Map<String, Object> body = new HashMap<>();
+        body.put("username", request.getUsername());
+        body.put("password", request.getPassword());
+        body.put("pattern", request.getPattern());
+        body.put("grantType", request.getGrantType());
+
+        Map<String, String> params = new TreeMap<>();
+        params.put("username", request.getUsername());
+        params.put("password", request.getPassword());
+        params.put("pattern", request.getPattern());
+        params.put("grantType", request.getGrantType());
+
+        String concatenatedParams = params.entrySet().stream()
+                                        .map(entry -> entry.getKey() + "=" + entry.getValue())
+                                        .collect(Collectors.joining("#"));
+
+        String concatenatedString = secret + "#" + timestamp + "#" + concatenatedParams + "#";
+        System.out.println(concatenatedString);
+        String signature = Sha1Util.generateSha1(concatenatedString);
+        System.out.println(signature);
+        HttpEntity<Map<String, Object>> entity = new HttpEntity<>(body, headerBuilder(appId, timestamp, signature, MediaType.APPLICATION_JSON));        
+        return httpRequestBuilder(entity, apiUrl, LoginResponse.class, HttpMethod.POST);
     }
 
 

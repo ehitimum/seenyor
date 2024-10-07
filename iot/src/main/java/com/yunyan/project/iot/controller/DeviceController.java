@@ -26,6 +26,8 @@ import com.yunyan.project.iot.dto.properties.DevicePropertiesDTO;
 import com.yunyan.project.iot.dto.properties.PropertiesDTO;
 import com.yunyan.project.iot.dto.subscribeAffair.SubscribeResponse;
 import com.yunyan.project.iot.dto.subscribeAffair.subscribeDTO;
+import com.yunyan.project.iot.dto.token.LoginDTO;
+import com.yunyan.project.iot.dto.token.LoginResponse;
 import com.yunyan.project.iot.service.DeviceService;
 
 import lombok.RequiredArgsConstructor;
@@ -94,6 +96,10 @@ public class DeviceController {
     @GetMapping("/phone/sim/whitelist")
     public WhiteResponse getWhitelist() throws  NoSuchAlgorithmException{
         return service.getWhitelist();
+    }
+    @GetMapping("/login")
+    public LoginResponse getToken(@RequestBody @Validated LoginDTO request) throws  NoSuchAlgorithmException{
+        return service.getToken();
     }
 
 
