@@ -11,6 +11,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.yunyan.project.iot.dto.DeviceResponse;
+import com.yunyan.project.iot.dto.MobileCardResponse;
+import com.yunyan.project.iot.dto.MobileResponse;
+import com.yunyan.project.iot.dto.WhiteResponse;
 import com.yunyan.project.iot.dto.bindDevice.bindDTO;
 import com.yunyan.project.iot.dto.boundary.BoundariesDTO;
 import com.yunyan.project.iot.dto.boundary.DeviceAreaDTO;
@@ -77,8 +80,20 @@ public class DeviceController {
         return service.setDeviceArea(request);
     }
     @PostMapping("/breath-heart")
-    public breathheartResponse setBreathHeartParam(@RequestBody @Validated BreathHeartParamDTO request){
+    public breathheartResponse setBreathHeartParam(@RequestBody @Validated BreathHeartParamDTO request) throws NoSuchAlgorithmException{
         return service.setBreathHeartParam(request);
+    }
+    @GetMapping("/phone")
+    public MobileResponse getPhoneNumber() throws  NoSuchAlgorithmException{
+        return service.getPhoneNumber();
+    }
+    @GetMapping("/phone/sim")
+    public MobileCardResponse getCardInfo() throws  NoSuchAlgorithmException{
+        return service.getCardInfo();
+    }
+    @GetMapping("/phone/sim/whitelist")
+    public WhiteResponse getWhitelist() throws  NoSuchAlgorithmException{
+        return service.getWhitelist();
     }
 
 
