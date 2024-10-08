@@ -19,7 +19,6 @@ import org.springframework.web.client.RestTemplate;
 import com.yunyan.project.iot.dto.DeviceResponse;
 import com.yunyan.project.iot.dto.MobileCardResponse;
 import com.yunyan.project.iot.dto.MobileResponse;
-import com.yunyan.project.iot.dto.WhiteResponse;
 import com.yunyan.project.iot.dto.bindDevice.bindDTO;
 import com.yunyan.project.iot.dto.boundary.BoundariesDTO;
 import com.yunyan.project.iot.dto.boundary.DeviceAreaDTO;
@@ -34,6 +33,8 @@ import com.yunyan.project.iot.dto.subscribeAffair.SubscribeResponse;
 import com.yunyan.project.iot.dto.subscribeAffair.subscribeDTO;
 import com.yunyan.project.iot.dto.token.LoginDTO;
 import com.yunyan.project.iot.dto.token.LoginResponse;
+import com.yunyan.project.iot.dto.whitelist.WhiteResponse;
+import com.yunyan.project.iot.dto.whitelist.WhitelistDTO;
 import com.yunyan.project.iot.util.Sha1Util;
 
 import lombok.RequiredArgsConstructor;
@@ -123,7 +124,8 @@ public class DeviceService {
         String concatenatedParams = params.entrySet().stream()
             .map(entry -> entry.getKey() + "=" + entry.getValue())
             .collect(Collectors.joining("#"));
-
+        
+        
         String concatenatedString = secret + "#" + timestamp + "#" + concatenatedParams + "#";
         System.out.println(concatenatedString);
         String signature = Sha1Util.generateSha1(concatenatedString);
@@ -412,7 +414,7 @@ public class DeviceService {
     }
 
     public LoginResponse getToken(LoginDTO request) throws NoSuchAlgorithmException {
-        String apiUrl = "https://qinglanst.com/prod-api/thirdparty/v2/unbindDevice";
+        String apiUrl = "https://qinglanst.com/prod-api/login";
         String timestamp = String.valueOf(System.currentTimeMillis()/ 1000);
         
         Map<String, Object> body = new HashMap<>();
@@ -436,8 +438,54 @@ public class DeviceService {
         String signature = Sha1Util.generateSha1(concatenatedString);
         System.out.println(signature);
         HttpEntity<Map<String, Object>> entity = new HttpEntity<>(body, headerBuilder(appId, timestamp, signature, MediaType.APPLICATION_JSON));        
-        return httpRequestBuilder(entity, apiUrl, LoginResponse.class, HttpMethod.POST);
+        return httpRequestBuilder(entity, apiUrl, LoginResponse.class, HttpMethod.GET);
     }
+
+    public WhiteResponse addWhitelis(WhitelistDTO request) throws NoSuchAlgorithmException {
+        String apiUrl = "https://qinglanst.com/prod-api/thirdparty/v2/whiteAdd";
+        String timestamp = String.valueOf(System.currentTimeMillis()/ 1000);
+        
+        Map<String, Object> body = new HashMap<>();
+        body.put("uid", request.getUid());
+        body.put("mobile", request.getMobile());
+
+        Map<String, String> params = new TreeMap<>();
+        params.put("uid", request.getUid());
+        params.put("mobile", request.getMobile());
+
+        String concatenatedParams = params.entrySet().stream()
+                                        .map(entry -> entry.getKey() + "=" + entry.getValue())
+                                        .collect(Collectors.joining("#"));
+
+        String concatenatedString = secret + "#" + timestamp + "#" + concatenatedParams + "#";
+        String signature = Sha1Util.generateSha1(concatenatedString);
+        HttpEntity<Map<String, Object>> entity = new HttpEntity<>(body, headerBuilder(appId, timestamp, signature, MediaType.APPLICATION_JSON));        
+        return httpRequestBuilder(entity, apiUrl, WhiteResponse.class, HttpMethod.POST);
+    }
+
+    public WhiteResponse delWhiteList(WhitelistDTO request) throws NoSuchAlgorithmException {
+        String apiUrl = "https://qinglanst.com/prod-api/thirdparty/v2/whiteDelete";
+        String timestamp = String.valueOf(System.currentTimeMillis()/ 1000);
+        
+        Map<String, Object> body = new HashMap<>();
+        body.put("uid", request.getUid());
+        body.put("mobile", request.getMobile());
+
+        Map<String, String> params = new TreeMap<>();
+        params.put("uid", request.getUid());
+        params.put("mobile", request.getMobile());
+
+        String concatenatedParams = params.entrySet().stream()
+                                        .map(entry -> entry.getKey() + "=" + entry.getValue())
+                                        .collect(Collectors.joining("#"));
+
+        String concatenatedString = secret + "#" + timestamp + "#" + concatenatedParams + "#";
+        String signature = Sha1Util.generateSha1(concatenatedString);
+        HttpEntity<Map<String, Object>> entity = new HttpEntity<>(body, headerBuilder(appId, timestamp, signature, MediaType.APPLICATION_JSON));        
+        return httpRequestBuilder(entity, apiUrl, WhiteResponse.class, HttpMethod.POST);
+    }
+
+
 
 
 
