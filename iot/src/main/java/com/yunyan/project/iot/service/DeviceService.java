@@ -29,6 +29,8 @@ import com.yunyan.project.iot.dto.mqttDisable.MqttDisableResponse;
 import com.yunyan.project.iot.dto.mqttEnable.MqttEnableDTO;
 import com.yunyan.project.iot.dto.properties.DevicePropertiesDTO;
 import com.yunyan.project.iot.dto.properties.PropertiesDTO;
+import com.yunyan.project.iot.dto.sleepReport.SleepReportRequestDTO;
+import com.yunyan.project.iot.dto.sleepReport.SleepReportResponseDTO;
 import com.yunyan.project.iot.dto.subscribeAffair.SubscribeResponse;
 import com.yunyan.project.iot.dto.subscribeAffair.subscribeDTO;
 import com.yunyan.project.iot.dto.token.LoginDTO;
@@ -483,6 +485,28 @@ public class DeviceService {
         String signature = Sha1Util.generateSha1(concatenatedString);
         HttpEntity<Map<String, Object>> entity = new HttpEntity<>(body, headerBuilder(appId, timestamp, signature, MediaType.APPLICATION_JSON));        
         return httpRequestBuilder(entity, apiUrl, WhiteResponse.class, HttpMethod.POST);
+    }
+
+    public SleepReportResponseDTO getSleepReport(SleepReportRequestDTO request) throws NoSuchAlgorithmException {
+        String apiUrl = "https://qinglanst.com/prod-api/thirdparty/v2/report";
+        String timestamp = String.valueOf(System.currentTimeMillis()/ 1000);
+        Map<String, Object> body = new HashMap<>();
+        body.put("uids", request.getUids());
+        body.put("date", request.getDate());
+
+        Map<String, Object> params = new HashMap<>();
+        params.put("uids",  String.join("=", request.getUids().stream()
+                                                    .map(String::valueOf)
+                                                    .toArray(String[]::new)));
+        params.put("data", request.getDate());
+        String concatenatedParams = params.entrySet().stream()
+                                        .map(entry -> entry.getKey() + "=" + entry.getValue())
+                                        .collect(Collectors.joining("#"));
+
+        String concatenatedString = secret + "#" + timestamp + "#" + concatenatedParams + "#";
+        String signature = Sha1Util.generateSha1(concatenatedString);
+        HttpEntity<Map<String, Object>> entity = new HttpEntity<>(body, headerBuilder(appId, timestamp, signature, MediaType.APPLICATION_JSON));        
+        return httpRequestBuilder(entity, apiUrl, SleepReportResponseDTO.class, HttpMethod.POST);
     }
 
 
