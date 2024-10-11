@@ -23,6 +23,9 @@ import com.yunyan.project.iot.dto.mqttDisable.MqttDisableResponse;
 import com.yunyan.project.iot.dto.mqttEnable.MqttEnableDTO;
 import com.yunyan.project.iot.dto.properties.DevicePropertiesDTO;
 import com.yunyan.project.iot.dto.properties.PropertiesDTO;
+import com.yunyan.project.iot.dto.riskRanking.RiskRankingResponseDTO;
+import com.yunyan.project.iot.dto.sleepReport.SleepReportRequestDTO;
+import com.yunyan.project.iot.dto.sleepReport.SleepReportResponseDTO;
 import com.yunyan.project.iot.dto.subscribeAffair.SubscribeResponse;
 import com.yunyan.project.iot.dto.subscribeAffair.subscribeDTO;
 import com.yunyan.project.iot.dto.token.LoginDTO;
@@ -121,6 +124,16 @@ public class DeviceController {
     @PostMapping("/phone/sim/whitelist/delete")
     public WhiteResponse delWhiteList(@RequestBody @Validated WhitelistDTO request)throws  NoSuchAlgorithmException{
         return service.delWhiteList(request);
+    }
+
+    @PostMapping("/sleepReport")
+    public SleepReportResponseDTO getSleepReport(@RequestBody @Validated SleepReportRequestDTO request)throws NoSuchAlgorithmException{
+        return service.getSleepReport(request);
+    }
+
+    @PostMapping("/riskranking")
+    public RiskRankingResponseDTO getRiskRanking()throws  NoSuchAlgorithmException{
+        return service.getRiskRanking();
     }
 
 

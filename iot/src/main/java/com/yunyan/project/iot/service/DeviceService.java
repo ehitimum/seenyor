@@ -29,6 +29,7 @@ import com.yunyan.project.iot.dto.mqttDisable.MqttDisableResponse;
 import com.yunyan.project.iot.dto.mqttEnable.MqttEnableDTO;
 import com.yunyan.project.iot.dto.properties.DevicePropertiesDTO;
 import com.yunyan.project.iot.dto.properties.PropertiesDTO;
+import com.yunyan.project.iot.dto.riskRanking.RiskRankingResponseDTO;
 import com.yunyan.project.iot.dto.sleepReport.SleepReportRequestDTO;
 import com.yunyan.project.iot.dto.sleepReport.SleepReportResponseDTO;
 import com.yunyan.project.iot.dto.subscribeAffair.SubscribeResponse;
@@ -507,6 +508,16 @@ public class DeviceService {
         String signature = Sha1Util.generateSha1(concatenatedString);
         HttpEntity<Map<String, Object>> entity = new HttpEntity<>(body, headerBuilder(appId, timestamp, signature, MediaType.APPLICATION_JSON));        
         return httpRequestBuilder(entity, apiUrl, SleepReportResponseDTO.class, HttpMethod.POST);
+    }
+
+    public RiskRankingResponseDTO getRiskRanking() throws NoSuchAlgorithmException {
+        String apiUrl = "https://qinglanst.com/prod-api/thirdparty/v2/report";
+        String timestamp = String.valueOf(System.currentTimeMillis()/ 1000);
+
+        String concatenatedString = secret + "#" + timestamp + "#";
+        String signature = Sha1Util.generateSha1(concatenatedString);
+        HttpEntity<Map<String, Object>> entity = new HttpEntity<>(null, headerBuilder(appId, timestamp, signature, MediaType.APPLICATION_JSON));        
+        return httpRequestBuilder(entity, apiUrl, RiskRankingResponseDTO.class, HttpMethod.POST);
     }
 
 
