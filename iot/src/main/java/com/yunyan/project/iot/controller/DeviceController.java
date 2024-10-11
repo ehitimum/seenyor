@@ -133,6 +133,10 @@ public class DeviceController {
 
     @PostMapping("/riskranking")
     public RiskRankingResponseDTO getRiskRanking()throws  NoSuchAlgorithmException{
+        
+        if(true){
+            System.out.println("Done");
+        }
         return service.getRiskRanking();
     }
 
