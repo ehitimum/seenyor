@@ -16,7 +16,7 @@ public class BreathHeartParamDTO {
     private int upperHeartRate;       
     private int lowerBreathe;          
     private int lowerHeartRate;      
-    private Integer intensiveCare;     
-    private Integer suddenDuration;  
-    private Integer sensitivity;    
+    private int intensiveCare;     
+    private int suddenDuration;  
+    private int sensitivity;    
 }
