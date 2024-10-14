@@ -30,10 +30,10 @@ public class SleepData {
 
     private BreathRate breathRateVo;
     private HeartRate heartRateVo;
-    // private List<SleepIndex> sleepIndexCommonList;
-    // private List<StatisticalData> statisticalData;
-    // private List<String> timestamps;
-    // private AlarmEvents alarmEvents;
-    // private Evaluation evaluation;
-    // private UserActivity userActivity;
+    private List<SleepIndex> sleepIndexCommonList;
+    private List<StatisticalData> statisticalData;
+    private List<String> timestamps;
+    private AlarmEvents alarmEvents;
+    private Evaluation evaluation;
+    private UserActivity userActivity;
 }

@@ -49,7 +49,7 @@ public class DeviceService {
     @Autowired
     private final RestTemplate restTemplate;
     private String appId = "ql763202409240025027482";
-    private String secret = "2d1a5d9019acf488260d224e63da0230d583ce8d";
+    private String secret = "5648bc97ab87a522b7c0ceda1fc81b0d251f8848";
    
     public <T> DeviceResponse getDeviceInfo() throws NoSuchAlgorithmException{
         String apiUrl = "https://qinglanst.com/prod-api/thirdparty/v2/getDeviceInfo";
@@ -348,7 +348,7 @@ public class DeviceService {
     }
 
     public breathheartResponse setBreathHeartParam(BreathHeartParamDTO request) throws NoSuchAlgorithmException {
-        String apiUrl = "https://qinglanst.com/prod-api/thirdparty/v2/coords";
+        String apiUrl = "https://qinglanst.com/prod-api/thirdparty/v2/threshold";
         String timestamp = String.valueOf(System.currentTimeMillis()/ 1000);
         
         Map<String, Object> body = new HashMap<>();
@@ -441,7 +441,17 @@ public class DeviceService {
         String signature = Sha1Util.generateSha1(concatenatedString);
         System.out.println(signature);
         HttpEntity<Map<String, Object>> entity = new HttpEntity<>(body, headerBuilder(appId, timestamp, signature, MediaType.APPLICATION_JSON));        
-        return httpRequestBuilder(entity, apiUrl, LoginResponse.class, HttpMethod.GET);
+        return httpRequestBuilder(entity, apiUrl, LoginResponse.class, HttpMethod.POST);
+    }
+    public LoginResponse getMiniToken() throws NoSuchAlgorithmException {
+        String apiUrl = "https://qinglanst.com/prod-api/thirdparty/v2/applet/auth";
+        String timestamp = String.valueOf(System.currentTimeMillis()/ 1000);
+        String concatenatedString = secret + "#" + timestamp + "#";
+        System.out.println(concatenatedString);
+        String signature = Sha1Util.generateSha1(concatenatedString);
+        System.out.println(signature);
+        HttpEntity<Map<String, Object>> entity = new HttpEntity<>(null, headerBuilder(appId, timestamp, signature, MediaType.APPLICATION_JSON));        
+        return httpRequestBuilder(entity, apiUrl, LoginResponse.class, HttpMethod.POST);
     }
 
     public WhiteResponse addWhitelis(WhitelistDTO request) throws NoSuchAlgorithmException {
@@ -483,7 +493,9 @@ public class DeviceService {
                                         .collect(Collectors.joining("#"));
 
         String concatenatedString = secret + "#" + timestamp + "#" + concatenatedParams + "#";
+        System.out.println(concatenatedString);
         String signature = Sha1Util.generateSha1(concatenatedString);
+        System.out.println(signature);
         HttpEntity<Map<String, Object>> entity = new HttpEntity<>(body, headerBuilder(appId, timestamp, signature, MediaType.APPLICATION_JSON));        
         return httpRequestBuilder(entity, apiUrl, WhiteResponse.class, HttpMethod.POST);
     }
@@ -499,19 +511,21 @@ public class DeviceService {
         params.put("uids",  String.join("=", request.getUids().stream()
                                                     .map(String::valueOf)
                                                     .toArray(String[]::new)));
-        params.put("data", request.getDate());
+        params.put("date", request.getDate());
         String concatenatedParams = params.entrySet().stream()
                                         .map(entry -> entry.getKey() + "=" + entry.getValue())
                                         .collect(Collectors.joining("#"));
 
         String concatenatedString = secret + "#" + timestamp + "#" + concatenatedParams + "#";
+        System.out.println(concatenatedString);
         String signature = Sha1Util.generateSha1(concatenatedString);
+        System.out.println(signature);
         HttpEntity<Map<String, Object>> entity = new HttpEntity<>(body, headerBuilder(appId, timestamp, signature, MediaType.APPLICATION_JSON));        
         return httpRequestBuilder(entity, apiUrl, SleepReportResponseDTO.class, HttpMethod.POST);
     }
 
     public RiskRankingResponseDTO getRiskRanking() throws NoSuchAlgorithmException {
-        String apiUrl = "https://qinglanst.com/prod-api/thirdparty/v2/report";
+        String apiUrl = "https://qinglanst.com/prod-api/thirdparty/v2/riskRanking";
         String timestamp = String.valueOf(System.currentTimeMillis()/ 1000);
 
         String concatenatedString = secret + "#" + timestamp + "#";

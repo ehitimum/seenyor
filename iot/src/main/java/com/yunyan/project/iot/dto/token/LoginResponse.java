@@ -1,7 +1,5 @@
 package com.yunyan.project.iot.dto.token;
 
-import java.util.List;
-
 import ch.qos.logback.core.subst.Token;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -16,5 +14,5 @@ import lombok.NoArgsConstructor;
 public class LoginResponse {
     private String code;
     private String msg;
-    private List<Token> data;
+    private Token data;
 }
