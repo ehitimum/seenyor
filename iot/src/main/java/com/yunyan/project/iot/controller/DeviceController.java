@@ -93,7 +93,7 @@ public class DeviceController {
         return service.setDeviceArea(request);
     }
 
-    @PostMapping("/breath-heart")
+    @PostMapping("/breathheart")
     public breathheartResponse setBreathHeartParam(@RequestBody @Validated BreathHeartParamDTO request) throws NoSuchAlgorithmException{
         return service.setBreathHeartParam(request);
     }
@@ -113,9 +113,13 @@ public class DeviceController {
         return service.getWhitelist();
     }
 
-    @GetMapping("/login")
+    @PostMapping("/login")
     public LoginResponse getToken(@RequestBody @Validated LoginDTO request) throws  NoSuchAlgorithmException{
         return service.getToken(request);
+    }
+    @PostMapping("/miniToken")
+    public LoginResponse getMiniToken() throws  NoSuchAlgorithmException{
+        return service.getMiniToken();
     }
     @PostMapping("/phone/sim/whitelist")
     public WhiteResponse addWhitelist(@RequestBody @Validated WhitelistDTO request)throws  NoSuchAlgorithmException{
@@ -133,10 +137,6 @@ public class DeviceController {
 
     @PostMapping("/riskranking")
     public RiskRankingResponseDTO getRiskRanking()throws  NoSuchAlgorithmException{
-        
-        if(true){
-            System.out.println("Done");
-        }
         return service.getRiskRanking();
     }
 
