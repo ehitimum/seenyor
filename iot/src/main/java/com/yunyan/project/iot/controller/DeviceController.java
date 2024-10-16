@@ -3,6 +3,7 @@ package com.yunyan.project.iot.controller;
 import java.security.NoSuchAlgorithmException;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -26,6 +27,7 @@ import com.yunyan.project.iot.dto.properties.PropertiesDTO;
 import com.yunyan.project.iot.dto.riskRanking.RiskRankingResponseDTO;
 import com.yunyan.project.iot.dto.sleepReport.SleepReportRequestDTO;
 import com.yunyan.project.iot.dto.sleepReport.SleepReportResponseDTO;
+import com.yunyan.project.iot.dto.subscribeAffair.DeviceEventNotificationDTO;
 import com.yunyan.project.iot.dto.subscribeAffair.SubscribeResponse;
 import com.yunyan.project.iot.dto.subscribeAffair.subscribeDTO;
 import com.yunyan.project.iot.dto.token.LoginDTO;
@@ -138,6 +140,41 @@ public class DeviceController {
     @PostMapping("/riskranking")
     public RiskRankingResponseDTO getRiskRanking()throws  NoSuchAlgorithmException{
         return service.getRiskRanking();
+    }
+
+    //-------------On Development ------------------//
+
+    // @PostMapping("/eventCallBack")
+    // public ResponseEntity<SubscribeResponse> handleEventNotification(@RequestBody @Validated DeviceEventNotificationDTO notification)throws  NoSuchAlgorithmException{
+    //     System.out.println("Received event: " + notification);
+    //     switch (notification.getEvent()) {
+    //         case "1":
+    //             service.handleHeadcountChange(notification);
+    //             break;
+    //         case "2":
+    //             service.handleFallIncident(notification);
+    //         case "3":
+    //             service.handleBreathAndHeartRate(notification);
+    //         case "4":
+    //             service.handleDoorEntryAndExit(notification);
+    //         case "5":
+    //             service.handleDeviceOfflineOnline(notification);
+    //         case "6":
+    //             service.handleBedEntryExit(notification);
+    //         case "7":
+    //             service.handPoorEvent(notification);
+    //         case "8":
+    //             service.handleAbnormalEven(notification);
+    //         case "9":
+    //             service.handleCommonAlarm(notification);
+    //         case "10":
+    //             service.handleEnteringExitingAlarmArea(notification);
+    //         default:
+    //             System.out.println("Unhandled event: " + notification.getEvent());
+    //             break;
+            
+            
+        }
     }
 
 
