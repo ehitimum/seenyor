@@ -534,6 +534,44 @@ public class DeviceService {
         return httpRequestBuilder(entity, apiUrl, RiskRankingResponseDTO.class, HttpMethod.POST);
     }
 
+    // public ResponseEntity<SubscribeResponse> handleHeadcountChange(DeviceEventNotificationDTO notification) {
+    //     int count = (int) notification.getParams().get("count");
+    //     // SubscribeResponse response = SubscribeResponse.builder()
+    //     //                             .code("200")
+    //     //                             .build();
+        
+    // }
+
+    // public void handleFallIncident(DeviceEventNotificationDTO notification) {
+    //     throw new UnsupportedOperationException("Not supported yet.");
+    // }
+
+    // public void handleBreathAndHeartRate(DeviceEventNotificationDTO notification) {
+    //     throw new UnsupportedOperationException("Not supported yet.");
+    // }
+
+    // public void handleDoorEntryAndExit(DeviceEventNotificationDTO notification) {
+    //     throw new UnsupportedOperationException("Not supported yet.");
+    // }
+
+    // public void handleDeviceOfflineOnline(DeviceEventNotificationDTO notification) {
+    //     throw new UnsupportedOperationException("Not supported yet.");
+    // }
+
+    // public void handPoorEvent(DeviceEventNotificationDTO notification) {
+    //     throw new UnsupportedOperationException("Not supported yet.");
+    // }
+
+    // public void handleCommonAlarm(DeviceEventNotificationDTO notification) {
+    //     throw new UnsupportedOperationException("Not supported yet.");
+    // }
+
+    // public void handleEnteringExitingAlarmArea(DeviceEventNotificationDTO notification) {
+    //     throw new UnsupportedOperationException("Not supported yet.");
+    // }
+
+   
+
 
 
 
