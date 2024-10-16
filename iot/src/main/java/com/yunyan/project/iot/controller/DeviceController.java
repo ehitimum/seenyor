@@ -3,7 +3,6 @@ package com.yunyan.project.iot.controller;
 import java.security.NoSuchAlgorithmException;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -27,7 +26,6 @@ import com.yunyan.project.iot.dto.properties.PropertiesDTO;
 import com.yunyan.project.iot.dto.riskRanking.RiskRankingResponseDTO;
 import com.yunyan.project.iot.dto.sleepReport.SleepReportRequestDTO;
 import com.yunyan.project.iot.dto.sleepReport.SleepReportResponseDTO;
-import com.yunyan.project.iot.dto.subscribeAffair.DeviceEventNotificationDTO;
 import com.yunyan.project.iot.dto.subscribeAffair.SubscribeResponse;
 import com.yunyan.project.iot.dto.subscribeAffair.subscribeDTO;
 import com.yunyan.project.iot.dto.token.LoginDTO;
@@ -174,8 +172,8 @@ public class DeviceController {
     //             break;
             
             
-        }
-    }
+        //}
+   // }
 
 
 }
