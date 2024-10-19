@@ -14,6 +14,7 @@ public class DeviceEventNotificationDTO {
     private String cmd;
     private String uid;
     private String event;
+    private int count;
     private String eventName;
     private Map<String, Object> params;
 }

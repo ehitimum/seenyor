@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -20,6 +21,7 @@ import com.yunyan.project.iot.dto.DeviceResponse;
 import com.yunyan.project.iot.dto.MobileCardResponse;
 import com.yunyan.project.iot.dto.MobileResponse;
 import com.yunyan.project.iot.dto.bindDevice.bindDTO;
+import com.yunyan.project.iot.dto.bindDevice.bindResponse;
 import com.yunyan.project.iot.dto.boundary.BoundariesDTO;
 import com.yunyan.project.iot.dto.boundary.DeviceAreaDTO;
 import com.yunyan.project.iot.dto.breathheart.BreathHeartParamDTO;
@@ -32,6 +34,8 @@ import com.yunyan.project.iot.dto.properties.PropertiesDTO;
 import com.yunyan.project.iot.dto.riskRanking.RiskRankingResponseDTO;
 import com.yunyan.project.iot.dto.sleepReport.SleepReportRequestDTO;
 import com.yunyan.project.iot.dto.sleepReport.SleepReportResponseDTO;
+import com.yunyan.project.iot.dto.subscribeAffair.CallBackResponse;
+import com.yunyan.project.iot.dto.subscribeAffair.DeviceEventNotificationDTO;
 import com.yunyan.project.iot.dto.subscribeAffair.SubscribeResponse;
 import com.yunyan.project.iot.dto.subscribeAffair.subscribeDTO;
 import com.yunyan.project.iot.dto.token.LoginDTO;
@@ -49,7 +53,7 @@ public class DeviceService {
     @Autowired
     private final RestTemplate restTemplate;
     private String appId = "ql763202409240025027482";
-    private String secret = "5648bc97ab87a522b7c0ceda1fc81b0d251f8848";
+    private String secret = "180cb5ecb949465e60b39944b26535e8869985b4";
    
     public <T> DeviceResponse getDeviceInfo() throws NoSuchAlgorithmException{
         String apiUrl = "https://qinglanst.com/prod-api/thirdparty/v2/getDeviceInfo";
@@ -138,9 +142,9 @@ public class DeviceService {
 }
 
     public PropertiesDTO getDeviceProp() throws NoSuchAlgorithmException {
-        String apiUrl = "https://qinglanst.com/prod-api/thirdparty/v2/deviceProp?uid=25A859B81A6F";
+        String apiUrl = "https://qinglanst.com/prod-api/thirdparty/v2/deviceProp?uid=3525E3DD5D9B";
         String timestamp = String.valueOf(System.currentTimeMillis() / 1000);
-        String concatenatedString = secret + "#" + timestamp + "#" + "uid=25A859B81A6F#"; //+ concatenatedParams + "#";
+        String concatenatedString = secret + "#" + timestamp + "#" + "uid=3525E3DD5D9B#"; //+ concatenatedParams + "#";
         System.out.println(concatenatedString);
         String signature = Sha1Util.generateSha1(concatenatedString);
         System.out.println(signature);
@@ -173,7 +177,7 @@ public class DeviceService {
         return httpRequestBuilder(entity, apiUrl, MqttDisableResponse.class, HttpMethod.POST);
     }
 
-    public DeviceResponse bindDevice(bindDTO request) throws NoSuchAlgorithmException {
+    public bindResponse bindDevice(bindDTO request) throws NoSuchAlgorithmException {
         String apiUrl = "https://qinglanst.com/prod-api/thirdparty/v2/bindDevice";
         String timestamp = String.valueOf(System.currentTimeMillis()/ 1000);
         Map<String, Object> body = new HashMap<>();
@@ -190,10 +194,10 @@ public class DeviceService {
         String signature = Sha1Util.generateSha1(concatenatedString);
         System.out.println(signature);
         HttpEntity<Map<String, Object>> entity = new HttpEntity<>(body, headerBuilder(appId, timestamp, signature, MediaType.APPLICATION_JSON));
-        return httpRequestBuilder(entity, apiUrl, DeviceResponse.class, HttpMethod.POST);
+        return httpRequestBuilder(entity, apiUrl, bindResponse.class, HttpMethod.POST);
     }
 
-    public DeviceResponse unbindDevice(bindDTO request) throws NoSuchAlgorithmException {
+    public bindResponse unbindDevice(bindDTO request) throws NoSuchAlgorithmException {
         String apiUrl = "https://qinglanst.com/prod-api/thirdparty/v2/unbindDevice";
         String timestamp = String.valueOf(System.currentTimeMillis()/ 1000);
         Map<String, Object> body = new HashMap<>();
@@ -210,7 +214,7 @@ public class DeviceService {
         String signature = Sha1Util.generateSha1(concatenatedString);
         System.out.println(signature);
         HttpEntity<Map<String, Object>> entity = new HttpEntity<>(body, headerBuilder(appId, timestamp, signature, MediaType.APPLICATION_JSON));
-        return httpRequestBuilder(entity, apiUrl, DeviceResponse.class, HttpMethod.POST);
+        return httpRequestBuilder(entity, apiUrl, bindResponse.class, HttpMethod.POST);
     }
 
     public SubscribeResponse subscribeAffair(subscribeDTO request) throws NoSuchAlgorithmException {
@@ -534,41 +538,49 @@ public class DeviceService {
         return httpRequestBuilder(entity, apiUrl, RiskRankingResponseDTO.class, HttpMethod.POST);
     }
 
-    // public ResponseEntity<SubscribeResponse> handleHeadcountChange(DeviceEventNotificationDTO notification) {
-    //     int count = (int) notification.getParams().get("count");
-    //     // SubscribeResponse response = SubscribeResponse.builder()
-    //     //                             .code("200")
-    //     //                             .build();
-        
-    // }
+    public ResponseEntity<CallBackResponse> handleHeadcountChange(DeviceEventNotificationDTO notification) {
+        int count = (int) notification.getParams().get("count");
+        DeviceEventNotificationDTO events = DeviceEventNotificationDTO.builder()
+                                        .cmd(notification.getCmd())
+                                        .uid(notification.getUid())
+                                        .event(notification.getEvent())
+                                        .count(count)
+                                        .build();
+        CallBackResponse response = CallBackResponse.builder()
+                                        .code("200")
+                                        .msg("Operation Successfull")
+                                        .data(events)
+                                        .build();
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
 
-    // public void handleFallIncident(DeviceEventNotificationDTO notification) {
-    //     throw new UnsupportedOperationException("Not supported yet.");
-    // }
+    public void handleFallIncident(DeviceEventNotificationDTO notification) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
 
-    // public void handleBreathAndHeartRate(DeviceEventNotificationDTO notification) {
-    //     throw new UnsupportedOperationException("Not supported yet.");
-    // }
+    public void handleBreathAndHeartRate(DeviceEventNotificationDTO notification) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
 
-    // public void handleDoorEntryAndExit(DeviceEventNotificationDTO notification) {
-    //     throw new UnsupportedOperationException("Not supported yet.");
-    // }
+    public void handleDoorEntryAndExit(DeviceEventNotificationDTO notification) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
 
-    // public void handleDeviceOfflineOnline(DeviceEventNotificationDTO notification) {
-    //     throw new UnsupportedOperationException("Not supported yet.");
-    // }
+    public void handleDeviceOfflineOnline(DeviceEventNotificationDTO notification) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
 
-    // public void handPoorEvent(DeviceEventNotificationDTO notification) {
-    //     throw new UnsupportedOperationException("Not supported yet.");
-    // }
+    public void handPoorEvent(DeviceEventNotificationDTO notification) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
 
-    // public void handleCommonAlarm(DeviceEventNotificationDTO notification) {
-    //     throw new UnsupportedOperationException("Not supported yet.");
-    // }
+    public void handleCommonAlarm(DeviceEventNotificationDTO notification) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
 
-    // public void handleEnteringExitingAlarmArea(DeviceEventNotificationDTO notification) {
-    //     throw new UnsupportedOperationException("Not supported yet.");
-    // }
+    public void handleEnteringExitingAlarmArea(DeviceEventNotificationDTO notification) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
 
    
 
