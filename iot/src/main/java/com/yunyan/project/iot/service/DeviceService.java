@@ -305,7 +305,7 @@ public class DeviceService {
         params.put("upRight", request.getUpRight());
         params.put("lowRight", request.getLowRight());
 
-        String concatenatedParams = params.entrySet().stream()
+        String concatenatedParams = params.entrySet().stream().sorted(Map.Entry.comparingByKey())
                                         .map(entry -> entry.getKey() + "=" + entry.getValue())
                                         .collect(Collectors.joining("#"));
 
@@ -339,7 +339,7 @@ public class DeviceService {
         params.put("upRight", request.getUpRight());
         params.put("lowRight", request.getLowRight());
 
-        String concatenatedParams = params.entrySet().stream()
+        String concatenatedParams = params.entrySet().stream().sorted(Map.Entry.comparingByKey())
                                         .map(entry -> entry.getKey() + "=" + entry.getValue())
                                         .collect(Collectors.joining("#"));
 
@@ -375,7 +375,7 @@ public class DeviceService {
         params.put("suddenDuration", request.getSuddenDuration());
         params.put("sensitivity", request.getSensitivity());
 
-        String concatenatedParams = params.entrySet().stream()
+        String concatenatedParams = params.entrySet().stream().sorted(Map.Entry.comparingByKey())
                                         .map(entry -> entry.getKey() + "=" + entry.getValue())
                                         .collect(Collectors.joining("#"));
 
