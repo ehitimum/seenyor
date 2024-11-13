@@ -554,32 +554,147 @@ public class DeviceService {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    public void handleFallIncident(DeviceEventNotificationDTO notification) {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public ResponseEntity<CallBackResponse> handleFallIncident(DeviceEventNotificationDTO notification) {
+        DeviceEventNotificationDTO events = DeviceEventNotificationDTO.builder()
+                                        .cmd(notification.getCmd())
+                                        .uid(notification.getUid())
+                                        .event(notification.getEvent())
+                                        .eventName(notification.getEventName())
+                                        .build();
+        CallBackResponse response = CallBackResponse.builder()
+                                        .code("200")
+                                        .msg("Operation Successfull")
+                                        .data(events)
+                                        .build();
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    public void handleBreathAndHeartRate(DeviceEventNotificationDTO notification) {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public ResponseEntity<CallBackResponse> handleBreathAndHeartRate(DeviceEventNotificationDTO notification) {
+        DeviceEventNotificationDTO events = DeviceEventNotificationDTO.builder()
+                                        .cmd(notification.getCmd())
+                                        .uid(notification.getUid())
+                                        .event(notification.getEvent())
+                                        .eventName(notification.getEventName())
+                                        .params(notification.getParams())
+                                        .build();
+        CallBackResponse response = CallBackResponse.builder()
+                                        .code("200")
+                                        .msg("Operation Successfull")
+                                        .data(events)
+                                        .build();
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    public void handleDoorEntryAndExit(DeviceEventNotificationDTO notification) {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public ResponseEntity<CallBackResponse> handleDoorEntryAndExit(DeviceEventNotificationDTO notification) {
+        DeviceEventNotificationDTO events = DeviceEventNotificationDTO.builder()
+                                        .cmd(notification.getCmd())
+                                        .uid(notification.getUid())
+                                        .event(notification.getEvent())
+                                        .eventName(notification.getEventName())
+                                        .params(notification.getParams())
+                                        .build();
+        CallBackResponse response = CallBackResponse.builder()
+                                        .code("200")
+                                        .msg("Operation Successfull")
+                                        .data(events)
+                                        .build();
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    public void handleDeviceOfflineOnline(DeviceEventNotificationDTO notification) {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public ResponseEntity<CallBackResponse> handleDeviceOfflineOnline(DeviceEventNotificationDTO notification) {
+        DeviceEventNotificationDTO events = DeviceEventNotificationDTO.builder()
+                                        .cmd(notification.getCmd())
+                                        .uid(notification.getUid())
+                                        .event(notification.getEvent())
+                                        .eventName(notification.getEventName())
+                                        .params(notification.getParams())
+                                        .build();
+        CallBackResponse response = CallBackResponse.builder()
+                                        .code("200")
+                                        .msg("Operation Successfull")
+                                        .data(events)
+                                        .build();
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    public void handPoorEvent(DeviceEventNotificationDTO notification) {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public ResponseEntity<CallBackResponse> handPoorEvent(DeviceEventNotificationDTO notification) {
+        DeviceEventNotificationDTO events = DeviceEventNotificationDTO.builder()
+                                        .cmd(notification.getCmd())
+                                        .uid(notification.getUid())
+                                        .event(notification.getEvent())
+                                        .eventName(notification.getEventName())
+                                        .params(notification.getParams())
+                                        .build();
+        CallBackResponse response = CallBackResponse.builder()
+                                        .code("200")
+                                        .msg("Operation Successfull")
+                                        .data(events)
+                                        .build();
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    public void handleCommonAlarm(DeviceEventNotificationDTO notification) {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public ResponseEntity<CallBackResponse> handleCommonAlarm(DeviceEventNotificationDTO notification) {
+        DeviceEventNotificationDTO events = DeviceEventNotificationDTO.builder()
+                                        .cmd(notification.getCmd())
+                                        .uid(notification.getUid())
+                                        .event(notification.getEvent())
+                                        .eventName(notification.getEventName())
+                                        .params(notification.getParams())
+                                        .build();
+        CallBackResponse response = CallBackResponse.builder()
+                                        .code("200")
+                                        .msg("Operation Successfull")
+                                        .data(events)
+                                        .build();
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    public void handleEnteringExitingAlarmArea(DeviceEventNotificationDTO notification) {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public ResponseEntity<CallBackResponse> handleEnteringExitingAlarmArea(DeviceEventNotificationDTO notification) {
+        DeviceEventNotificationDTO events = DeviceEventNotificationDTO.builder()
+                                        .cmd(notification.getCmd())
+                                        .uid(notification.getUid())
+                                        .event(notification.getEvent())
+                                        .eventName(notification.getEventName())
+                                        .params(notification.getParams())
+                                        .build();
+        CallBackResponse response = CallBackResponse.builder()
+                                        .code("200")
+                                        .msg("Operation Successfull")
+                                        .data(events)
+                                        .build();
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    public ResponseEntity<CallBackResponse> handleBedEntryExit(DeviceEventNotificationDTO notification) {
+        DeviceEventNotificationDTO events = DeviceEventNotificationDTO.builder()
+                                        .cmd(notification.getCmd())
+                                        .uid(notification.getUid())
+                                        .event(notification.getEvent())
+                                        .eventName(notification.getEventName())
+                                        .params(notification.getParams())
+                                        .build();
+        CallBackResponse response = CallBackResponse.builder()
+                                        .code("200")
+                                        .msg("Operation Successfull")
+                                        .data(events)
+                                        .build();
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    public ResponseEntity<CallBackResponse> handleAbnormalEven(DeviceEventNotificationDTO notification) {
+        DeviceEventNotificationDTO events = DeviceEventNotificationDTO.builder()
+                                        .cmd(notification.getCmd())
+                                        .uid(notification.getUid())
+                                        .event(notification.getEvent())
+                                        .eventName(notification.getEventName())
+                                        .params(notification.getParams())
+                                        .build();
+        CallBackResponse response = CallBackResponse.builder()
+                                        .code("200")
+                                        .msg("Operation Successfull")
+                                        .data(events)
+                                        .build();
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
    
