@@ -218,15 +218,17 @@ public class DeviceService {
     }
 
     public SubscribeResponse subscribeAffair(subscribeDTO request) throws NoSuchAlgorithmException {
-        String apiUrl = "https://qinglanst.com/prod-api/thirdparty/v2/unbindDevice";
+        String apiUrl = "https://qinglanst.com/prod-api/thirdparty/v2/subOwner";
         String timestamp = String.valueOf(System.currentTimeMillis()/ 1000);
         
         Map<String, Object> body = new HashMap<>();
+        body.put("uid", request.getUid());
         body.put("event", request.getEvent());
         body.put("humanUrl", request.getHumanUrl());
         body.put("eventUrl", request.getEventUrl());
 
         Map<String, String> params = new TreeMap<>();
+        params.put("uid", request.getUid());
         params.put("event", String.join("=", request.getEvent().stream()
                                         .map(String::valueOf)
                                         .toArray(String[]::new )));

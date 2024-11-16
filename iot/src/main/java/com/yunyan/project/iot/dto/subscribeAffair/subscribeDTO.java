@@ -13,6 +13,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 
 public class subscribeDTO {
+    private String uid;
     private List<String> event;
     private String humanUrl;
     private String eventUrl;
