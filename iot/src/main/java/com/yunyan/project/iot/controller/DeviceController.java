@@ -147,6 +147,7 @@ public class DeviceController {
     @PostMapping("/eventCallBack")
     public void handleEventNotification(@RequestBody @Validated DeviceEventNotificationDTO notification)throws  NoSuchAlgorithmException{
         System.out.println("Received event: " + notification);
+        System.out.println(notification.getEvent());
         switch (notification.getEvent()) {
             case "1":
                 service.handleHeadcountChange(notification);
@@ -158,7 +159,9 @@ public class DeviceController {
             case "4":
                 service.handleDoorEntryAndExit(notification);
             case "5":
+                System.out.println("162 " + notification.getEvent());
                 service.handleDeviceOfflineOnline(notification);
+                break;
             case "6":
                 service.handleBedEntryExit(notification);
             case "7":

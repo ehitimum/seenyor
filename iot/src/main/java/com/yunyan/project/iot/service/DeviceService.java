@@ -604,6 +604,7 @@ public class DeviceService {
     }
 
     public ResponseEntity<CallBackResponse> handleDeviceOfflineOnline(DeviceEventNotificationDTO notification) {
+        System.out.println("Notification:"+ notification);
         DeviceEventNotificationDTO events = DeviceEventNotificationDTO.builder()
                                         .cmd(notification.getCmd())
                                         .uid(notification.getUid())
@@ -611,11 +612,14 @@ public class DeviceService {
                                         .eventName(notification.getEventName())
                                         .params(notification.getParams())
                                         .build();
+        System.out.println("Events:"+ events);
+        
         CallBackResponse response = CallBackResponse.builder()
                                         .code("200")
                                         .msg("Operation Successfull")
                                         .data(events)
                                         .build();
+        System.out.println("Response:"+ response);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
