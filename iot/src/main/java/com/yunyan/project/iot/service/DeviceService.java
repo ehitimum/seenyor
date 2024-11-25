@@ -52,11 +52,11 @@ public class DeviceService {
 
     @Autowired
     private final RestTemplate restTemplate;
-    private String appId = "ql763202409240025027482";
-    private String secret = "180cb5ecb949465e60b39944b26535e8869985b4";
-   
+    private String appId = "ql112024112601201532cf";
+    private String secret = "6899a872eb764e9ea094b24537bedb0493ebc552";
+    private String host = "http://3.104.3.162/";
     public <T> DeviceResponse getDeviceInfo() throws NoSuchAlgorithmException{
-        String apiUrl = "https://qinglanst.com/prod-api/thirdparty/v2/getDeviceInfo";
+        String apiUrl = host+"prod-api/thirdparty/v2/getDeviceInfo";
         String timestamp = String.valueOf(System.currentTimeMillis() / 1000);
         String concatenatedString = secret + "#" + timestamp + "#";
         String signature = Sha1Util.generateSha1(concatenatedString);
@@ -92,7 +92,7 @@ public class DeviceService {
     }
 
     public DeviceResponse enableMqttPush(MqttEnableDTO request) throws NoSuchAlgorithmException {
-        String apiUrl = "https://qinglanst.com/prod-api/thirdmqtt/v2/dept/opmqtt";
+        String apiUrl = host+"prod-api/thirdmqtt/v2/dept/opmqtt";
         String timestamp = String.valueOf(System.currentTimeMillis() / 1000);
         Map<String, Object> body = new HashMap<>();
         
@@ -142,7 +142,7 @@ public class DeviceService {
 }
 
     public PropertiesDTO getDeviceProp() throws NoSuchAlgorithmException {
-        String apiUrl = "https://qinglanst.com/prod-api/thirdparty/v2/deviceProp?uid=3525E3DD5D9B";
+        String apiUrl = host+"prod-api/thirdparty/v2/deviceProp?uid=3525E3DD5D9B";
         String timestamp = String.valueOf(System.currentTimeMillis() / 1000);
         String concatenatedString = secret + "#" + timestamp + "#" + "uid=3525E3DD5D9B#"; //+ concatenatedParams + "#";
         System.out.println(concatenatedString);
@@ -154,7 +154,7 @@ public class DeviceService {
 
     public MqttDisableResponse disableMqtt(MqttDisableDTO request) throws NoSuchAlgorithmException {
         
-        String apiUrl = "https://qinglanst.com/prod-api/thirdmqtt/v2/dept/clmqtt";
+        String apiUrl = host+"prod-api/thirdmqtt/v2/dept/clmqtt";
         String timestamp = String.valueOf(System.currentTimeMillis()/ 1000);
         Map<String, Object> body = new HashMap<>();
         body.put("uid", request.getUid());
@@ -178,7 +178,7 @@ public class DeviceService {
     }
 
     public bindResponse bindDevice(bindDTO request) throws NoSuchAlgorithmException {
-        String apiUrl = "https://qinglanst.com/prod-api/thirdparty/v2/bindDevice";
+        String apiUrl = host+"prod-api/thirdparty/v2/bindDevice";
         String timestamp = String.valueOf(System.currentTimeMillis()/ 1000);
         Map<String, Object> body = new HashMap<>();
         body.put("uid", request.getUid());
@@ -198,7 +198,7 @@ public class DeviceService {
     }
 
     public bindResponse unbindDevice(bindDTO request) throws NoSuchAlgorithmException {
-        String apiUrl = "https://qinglanst.com/prod-api/thirdparty/v2/unbindDevice";
+        String apiUrl = host+"prod-api/thirdparty/v2/unbindDevice";
         String timestamp = String.valueOf(System.currentTimeMillis()/ 1000);
         Map<String, Object> body = new HashMap<>();
         body.put("uid", request.getUid());
@@ -218,7 +218,7 @@ public class DeviceService {
     }
 
     public SubscribeResponse subscribeAffair(subscribeDTO request) throws NoSuchAlgorithmException {
-        String apiUrl = "https://qinglanst.com/prod-api/thirdparty/v2/subOwner";
+        String apiUrl = host+"prod-api/thirdparty/v2/subOwner";
         String timestamp = String.valueOf(System.currentTimeMillis()/ 1000);
         
         Map<String, Object> body = new HashMap<>();
@@ -248,7 +248,7 @@ public class DeviceService {
     }
 
     public PropertiesDTO setDeviceProp(DevicePropertiesDTO request) throws NoSuchAlgorithmException {
-        String apiUrl = "https://qinglanst.com/prod-api/thirdparty/v2/prop";
+        String apiUrl = host+"prod-api/thirdparty/v2/prop";
         String timestamp = String.valueOf(System.currentTimeMillis()/ 1000);
         
         Map<String, Object> body = new HashMap<>();
@@ -290,7 +290,7 @@ public class DeviceService {
     }
 
     public DeviceResponse setDeviceBoundary(BoundariesDTO request) throws NoSuchAlgorithmException {
-        String apiUrl = "https://qinglanst.com/prod-api/thirdparty/v2/border";
+        String apiUrl = host+"prod-api/thirdparty/v2/border";
         String timestamp = String.valueOf(System.currentTimeMillis()/ 1000);
         
         Map<String, Object> body = new HashMap<>();
@@ -320,7 +320,7 @@ public class DeviceService {
     }
 
     public DeviceResponse setDeviceArea(DeviceAreaDTO request) throws NoSuchAlgorithmException {
-        String apiUrl = "https://qinglanst.com/prod-api/thirdparty/v2/coords";
+        String apiUrl = host+"prod-api/thirdparty/v2/coords";
         String timestamp = String.valueOf(System.currentTimeMillis()/ 1000);
         
         Map<String, Object> body = new HashMap<>();
@@ -354,7 +354,7 @@ public class DeviceService {
     }
 
     public breathheartResponse setBreathHeartParam(BreathHeartParamDTO request) throws NoSuchAlgorithmException {
-        String apiUrl = "https://qinglanst.com/prod-api/thirdparty/v2/threshold";
+        String apiUrl = host+"prod-api/thirdparty/v2/threshold";
         String timestamp = String.valueOf(System.currentTimeMillis()/ 1000);
         
         Map<String, Object> body = new HashMap<>();
@@ -390,7 +390,7 @@ public class DeviceService {
     }
 
     public MobileResponse getPhoneNumber() throws NoSuchAlgorithmException {
-        String apiUrl = "https://qinglanst.com/prod-api/thirdparty/v2/getCallee?uid=25A859B81A6F";
+        String apiUrl = host+"prod-api/thirdparty/v2/getCallee?uid=25A859B81A6F";
         String timestamp = String.valueOf(System.currentTimeMillis() / 1000);
         String concatenatedString = secret + "#" + timestamp + "#" + "uid=25A859B81A6F#";
         System.out.println(concatenatedString);
@@ -401,7 +401,7 @@ public class DeviceService {
     }
     
     public MobileCardResponse getCardInfo() throws NoSuchAlgorithmException {
-        String apiUrl = "https://qinglanst.com/prod-api/thirdparty/v2/cardInfo?uid=25A859B81A6F";
+        String apiUrl = host+"prod-api/thirdparty/v2/cardInfo?uid=25A859B81A6F";
         String timestamp = String.valueOf(System.currentTimeMillis() / 1000);
         String concatenatedString = secret + "#" + timestamp + "#" + "uid=25A859B81A6F#";
         System.out.println(concatenatedString);
@@ -412,7 +412,7 @@ public class DeviceService {
     }
 
     public WhiteResponse getWhitelist() throws NoSuchAlgorithmException {
-        String apiUrl = "https://qinglanst.com/prod-api/thirdparty/v2/whiteList?uid=25A859B81A6F";
+        String apiUrl = host+"prod-api/thirdparty/v2/whiteList?uid=25A859B81A6F";
         String timestamp = String.valueOf(System.currentTimeMillis() / 1000);
         String concatenatedString = secret + "#" + timestamp + "#" + "uid=25A859B81A6F#";
         System.out.println(concatenatedString);
@@ -423,7 +423,7 @@ public class DeviceService {
     }
 
     public LoginResponse getToken(LoginDTO request) throws NoSuchAlgorithmException {
-        String apiUrl = "https://qinglanst.com/prod-api/login";
+        String apiUrl = host+"prod-api/login";
         String timestamp = String.valueOf(System.currentTimeMillis()/ 1000);
         
         Map<String, Object> body = new HashMap<>();
@@ -450,7 +450,7 @@ public class DeviceService {
         return httpRequestBuilder(entity, apiUrl, LoginResponse.class, HttpMethod.POST);
     }
     public LoginResponse getMiniToken() throws NoSuchAlgorithmException {
-        String apiUrl = "https://qinglanst.com/prod-api/thirdparty/v2/applet/auth";
+        String apiUrl = host+"prod-api/thirdparty/v2/applet/auth";
         String timestamp = String.valueOf(System.currentTimeMillis()/ 1000);
         String concatenatedString = secret + "#" + timestamp + "#";
         System.out.println(concatenatedString);
@@ -461,7 +461,7 @@ public class DeviceService {
     }
 
     public WhiteResponse addWhitelis(WhitelistDTO request) throws NoSuchAlgorithmException {
-        String apiUrl = "https://qinglanst.com/prod-api/thirdparty/v2/whiteAdd";
+        String apiUrl = host+"prod-api/thirdparty/v2/whiteAdd";
         String timestamp = String.valueOf(System.currentTimeMillis()/ 1000);
         
         Map<String, Object> body = new HashMap<>();
@@ -483,7 +483,7 @@ public class DeviceService {
     }
 
     public WhiteResponse delWhiteList(WhitelistDTO request) throws NoSuchAlgorithmException {
-        String apiUrl = "https://qinglanst.com/prod-api/thirdparty/v2/whiteDelete";
+        String apiUrl = host+"prod-api/thirdparty/v2/whiteDelete";
         String timestamp = String.valueOf(System.currentTimeMillis()/ 1000);
         
         Map<String, Object> body = new HashMap<>();
@@ -507,7 +507,7 @@ public class DeviceService {
     }
 
     public SleepReportResponseDTO getSleepReport(SleepReportRequestDTO request) throws NoSuchAlgorithmException {
-        String apiUrl = "https://qinglanst.com/prod-api/thirdparty/v2/report";
+        String apiUrl = host+"prod-api/thirdparty/v2/report";
         String timestamp = String.valueOf(System.currentTimeMillis()/ 1000);
         Map<String, Object> body = new HashMap<>();
         body.put("uids", request.getUids());
@@ -531,7 +531,7 @@ public class DeviceService {
     }
 
     public RiskRankingResponseDTO getRiskRanking() throws NoSuchAlgorithmException {
-        String apiUrl = "https://qinglanst.com/prod-api/thirdparty/v2/riskRanking";
+        String apiUrl = host+"prod-api/thirdparty/v2/riskRanking";
         String timestamp = String.valueOf(System.currentTimeMillis()/ 1000);
 
         String concatenatedString = secret + "#" + timestamp + "#";

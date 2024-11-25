@@ -34,38 +34,81 @@ public class MqttReceiverExample {
                 JsonObject jsonObject = JsonParser.parseString(messageContent).getAsJsonObject();
                 JsonObject payload = jsonObject.getAsJsonObject("payload");
 
-                if (payload != null && payload.has("heartbreath")) {
-                    String heartbreathBase64 = payload.get("heartbreath").getAsString();
+                if (payload != null) {
+                    // Decode heartbreath if available
+                    if (payload.has("heartbreath")) {
+                        decodeHeartbreath(payload.get("heartbreath").getAsString());
+                    }
 
-                    // Decode Base64-encoded heartbreath field
-                    byte[] heartbreathBytes = Base64.getDecoder().decode(heartbreathBase64);
-
-                    if (heartbreathBytes.length == 16) {
-                        // Interpret the byte array
-                        int identifier = heartbreathBytes[0] & 0xFF; // Byte 0
-                        int breathingValue = heartbreathBytes[1] & 0xFF; // Byte 1
-                        int heartRateValue = heartbreathBytes[2] & 0xFF; // Byte 2
-
-                        // Byte 13 - Status Events
-                        int statusEvents = heartbreathBytes[13] & 0xFF;
-                        int sleepState = (statusEvents >> 6) & 0x03; // Extract bits 6 and 7
-
-                        // Print the decoded values
-                        System.out.println("Decoded heartbreath data:");
-                        System.out.println("Identifier: " + identifier);
-                        System.out.println("Breathing Value: " + breathingValue + " times/minute");
-                        System.out.println("Heart Rate Value: " + heartRateValue + " times/minute");
-                        System.out.println("Sleep State: " + decodeSleepState(sleepState));
-                    } else {
-                        System.out.println("Invalid heartbreath length. Expected 16 bytes, but got: " + heartbreathBytes.length);
+                    // Decode position if available
+                    if (payload.has("position")) {
+                        decodePosition(payload.get("position").getAsString());
                     }
                 } else {
-                    System.out.println("heartbreath field is missing in the payload.");
+                    System.out.println("Payload is missing in the message.");
                 }
             }
         });
 
         System.out.println("Waiting for messages...");
+    }
+
+    // Decode the heartbreath field
+    private static void decodeHeartbreath(String heartbreathBase64) {
+        byte[] heartbreathBytes = Base64.getDecoder().decode(heartbreathBase64);
+
+        if (heartbreathBytes.length == 16) {
+            int identifier = heartbreathBytes[0] & 0xFF;
+            int breathingValue = heartbreathBytes[1] & 0xFF;
+            int heartRateValue = heartbreathBytes[2] & 0xFF;
+
+            int statusEvents = heartbreathBytes[13] & 0xFF;
+            int sleepState = (statusEvents >> 6) & 0x03;
+
+            System.out.println("Decoded heartbreath data:");
+            System.out.println("Identifier: " + identifier);
+            System.out.println("Breathing Value: " + breathingValue + " times/minute");
+            System.out.println("Heart Rate Value: " + heartRateValue + " times/minute");
+            System.out.println("Sleep State: " + decodeSleepState(sleepState));
+        } else {
+            System.out.println("Invalid heartbreath length. Expected 16 bytes.");
+        }
+    }
+
+    // Decode the position field
+    private static void decodePosition(String positionBase64) {
+        byte[] positionBytes = Base64.getDecoder().decode(positionBase64);
+
+        if (positionBytes.length % 16 != 0) {
+            System.out.println("Invalid position length. Must be a multiple of 16 bytes.");
+            return;
+        }
+
+        int numPeople = positionBytes.length / 16;
+
+        System.out.println("Decoded position data for " + numPeople + " people:");
+        for (int i = 0; i < numPeople; i++) {
+            int offset = i * 16;
+            int targetId = positionBytes[offset] & 0xFF;
+            int xCoordinate = positionBytes[offset + 1];
+            int yCoordinate = positionBytes[offset + 2];
+            int zCoordinate = positionBytes[offset + 3] & 0xFF;
+
+            int timeLeft = positionBytes[offset + 12] & 0xFF;
+            int posture = positionBytes[offset + 13] & 0xFF;
+            int event = positionBytes[offset + 14] & 0xFF;
+            int areaId = positionBytes[offset + 15] & 0xFF;
+
+            System.out.println("Person " + (i + 1) + ":");
+            System.out.println("  Target ID: " + targetId);
+            System.out.println("  Coordinates (x, y, z): (" + xCoordinate + " dm, " + yCoordinate + " dm, " + zCoordinate + " cm)");
+            System.out.println("  Time Left: " + timeLeft + " seconds");
+            System.out.println("  Posture: " + decodePosture(posture));
+            System.out.println("  Event: " + decodeEvent(event));
+            if (event == 3 || event == 4) {
+                System.out.println("  Area ID: " + areaId);
+            }
+        }
     }
 
     // Helper method to decode the sleep state
@@ -81,6 +124,46 @@ public class MqttReceiverExample {
                 return "Awake";
             default:
                 return "Unknown";
+        }
+    }
+
+    // Helper method to decode the posture
+    private static String decodePosture(int posture) {
+        switch (posture) {
+            case 0:
+                return "Initialization";
+            case 1:
+                return "Walking";
+            case 2:
+                return "Suspected Fall";
+            case 3:
+                return "Squatting";
+            case 4:
+                return "Standing";
+            case 5:
+                return "Fall Confirmation";
+            case 6:
+                return "In Bed";
+            default:
+                return "Unknown Posture";
+        }
+    }
+
+    // Helper method to decode the event
+    private static String decodeEvent(int event) {
+        switch (event) {
+            case 0:
+                return "No Event";
+            case 1:
+                return "Enter Room";
+            case 2:
+                return "Leave Room";
+            case 3:
+                return "Enter Area";
+            case 4:
+                return "Leave Area";
+            default:
+                return "Unknown Event";
         }
     }
 }
