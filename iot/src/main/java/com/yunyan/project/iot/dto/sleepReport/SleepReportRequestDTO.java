@@ -14,4 +14,5 @@ import lombok.NoArgsConstructor;
 public class SleepReportRequestDTO {
     private List<String> uids;
     private String date;
+    private String version;
 }

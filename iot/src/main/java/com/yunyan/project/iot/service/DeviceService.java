@@ -52,9 +52,9 @@ public class DeviceService {
 
     @Autowired
     private final RestTemplate restTemplate;
-    private String appId = "ql112024112601201532cf";
-    private String secret = "6899a872eb764e9ea094b24537bedb0493ebc552";
-    private String host = "http://3.104.3.162/";
+    private String appId = "ql16202412070311574409";
+    private String secret = "63e6eb2435a95a9502fa3933aacadaccb2f32766";
+    private String host = "https://console.elderlycareplatform.com/";
     public <T> DeviceResponse getDeviceInfo() throws NoSuchAlgorithmException{
         String apiUrl = host+"prod-api/thirdparty/v2/getDeviceInfo";
         String timestamp = String.valueOf(System.currentTimeMillis() / 1000);
@@ -446,7 +446,7 @@ public class DeviceService {
         System.out.println(concatenatedString);
         String signature = Sha1Util.generateSha1(concatenatedString);
         System.out.println(signature);
-        HttpEntity<Map<String, Object>> entity = new HttpEntity<>(body, headerBuilder(appId, timestamp, signature, MediaType.APPLICATION_JSON));        
+        HttpEntity<Map<String, Object>> entity = new HttpEntity<>(body, headerBuilder(appId, timestamp, signature, MediaType.APPLICATION_JSON));       
         return httpRequestBuilder(entity, apiUrl, LoginResponse.class, HttpMethod.POST);
     }
     public LoginResponse getMiniToken() throws NoSuchAlgorithmException {
@@ -512,12 +512,14 @@ public class DeviceService {
         Map<String, Object> body = new HashMap<>();
         body.put("uids", request.getUids());
         body.put("date", request.getDate());
+        body.put("version", request.getVersion());
 
         Map<String, Object> params = new HashMap<>();
         params.put("uids",  String.join("=", request.getUids().stream()
                                                     .map(String::valueOf)
                                                     .toArray(String[]::new)));
         params.put("date", request.getDate());
+        params.put("version", request.getVersion());
         String concatenatedParams = params.entrySet().stream()
                                         .map(entry -> entry.getKey() + "=" + entry.getValue())
                                         .collect(Collectors.joining("#"));
